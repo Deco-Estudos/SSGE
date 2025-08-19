@@ -23,13 +23,11 @@ Com isso, é possível calcular e comparar o **gasto por aluno** de cada escola,
 O sistema segue um modelo **relacional**.  
 Entidades principais:  
 - **Secretaria**  
-- **Órgão Intermediário** (Regionais, Departamentos)  
+- **Departamentos**
+- **Diretorias Regionais**  
 - **Escola**  
-- **Usuário**  
 - **Combo de Gastos**  
 - **PreenchimentoCombo**  
-
-O diagrama ER está disponível na pasta `/docs`.
 
 ---
 
