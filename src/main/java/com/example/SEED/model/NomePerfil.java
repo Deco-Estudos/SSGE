@@ -4,7 +4,8 @@ public enum NomePerfil {
     //No Spring Security, o sistema espera que as roles venham prefixadas com "ROLE_"
     ADM("ROLE_ADM"),
     RESPONSAVEL_SETOR("ROLE_RESPONSAVEL_SETOR"),
-    RH("ROLE_RH");
+    RH("ROLE_RH"),
+    DIRETOR("ROLE_DIRETOR");
 
     private final String role;
 

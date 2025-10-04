@@ -1,0 +1,14 @@
+package com.example.SEED.repository;
+
+import com.example.SEED.model.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UserRepository extends JpaRepository<Usuario, Long>{
+    /*A moça da vídeo aula recomendou usar UserDetails pois é gerenciado pelo SpringSecurity,
+    Mas o chatGPT disse que usar Object era melhor, ent n sei ainda qual usar
+    */
+    UserDetails findByEmail(String email);
+}

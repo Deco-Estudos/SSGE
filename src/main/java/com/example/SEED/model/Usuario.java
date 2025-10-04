@@ -54,6 +54,7 @@ public class Usuario implements UserDetails{
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return perfisEstruturas.stream()
+                .filter(UsuarioPerfilEstrutura::isAtivo)
                 .map(UsuarioPerfilEstrutura::getPerfil)
                 .filter(Objects::nonNull)
                 .map(Perfil::getAuthorityName)
@@ -70,7 +71,7 @@ public class Usuario implements UserDetails{
 
     @Override
     public String getUsername() {
-        return this.nome;
+        return this.email; //Já que o usuário faz login com email, plmns eu acho
     }
 
     @Override
@@ -90,6 +91,11 @@ public class Usuario implements UserDetails{
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return this.ativo;
+    }
+
+    public Usuario(String email, String senha) {
+        this.email = email;
+        this.senha = senha;
     }
 }
