@@ -26,4 +26,6 @@ public class ComboItem {
 
     @Column(nullable = false)
     private String ordem;
+
+    private Boolean obrigatorio;
 }

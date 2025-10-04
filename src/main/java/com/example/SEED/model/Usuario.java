@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 
@@ -28,10 +30,13 @@ public class Usuario implements UserDetails{
     @Column(nullable = false)
     private String nome;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(unique = true)
+    @Column(nullable = false)
+    private String senha;
+
+    @Column(nullable = false,unique = true)
     private String cpf;
 
     @Column(unique = true)
@@ -50,19 +55,22 @@ public class Usuario implements UserDetails{
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return perfisEstruturas.stream()
                 .map(UsuarioPerfilEstrutura::getPerfil)
+                .filter(Objects::nonNull)
                 .map(Perfil::getAuthorityName)
+                .filter(Objects::nonNull)
+                .distinct() // remove duplicados caso existam
                 .map(SimpleGrantedAuthority::new)
                 .toList();
     }
 
     @Override
     public String getPassword() {
-        return "";
+        return this.senha;
     }
 
     @Override
     public String getUsername() {
-        return nome;
+        return this.nome;
     }
 
     @Override

@@ -5,5 +5,6 @@ import com.example.SEED.model.Uf;
 public record MunicipioDTO(
         Long id,
         String nome,
-        Uf uf
+        Uf uf,
+        String codeIbge
 ) {}

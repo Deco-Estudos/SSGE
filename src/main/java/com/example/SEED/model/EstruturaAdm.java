@@ -17,6 +17,7 @@ public class EstruturaAdm {
     @Column(name = "id_estrutura_adm")
     private Long id;
 
+    @Column(name = "nome",nullable = false)
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -26,4 +27,7 @@ public class EstruturaAdm {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_municipio", nullable = false)
     private Municipio municipio;
+
+
+    private Boolean ativo;
 }

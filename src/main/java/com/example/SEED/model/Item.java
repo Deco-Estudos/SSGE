@@ -25,4 +25,11 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_classificacao")
     private Classificacao classificacao;
+
+    @Column(name = "tipo_dado")
+    private String tipoDado;
+
+    private Boolean obrigatorio;
+
+    private boolean ative;
 }

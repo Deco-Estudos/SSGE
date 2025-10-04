@@ -36,4 +36,7 @@ public class UsuarioPerfilEstrutura {
     @Column(nullable = false)
     private boolean ativo;
 
+    public Perfil getPerfil() {
+        return perfil;
+    } //Criei o get de perfil por que por algum motivo o lombok não estava criando esse get e tava dando erro
 }

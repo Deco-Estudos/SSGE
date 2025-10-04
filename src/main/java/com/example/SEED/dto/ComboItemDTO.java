@@ -4,6 +4,7 @@ public record ComboItemDTO(
         Long id,
         ComboDTO comboDTO,
         ItemDTO itemDTO,
-        String ordem
+        String ordem,
+        Boolean obrigatorio
 ) {
 }

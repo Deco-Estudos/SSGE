@@ -22,4 +22,8 @@ public class Municipio {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uf_id", nullable = false)
     private Uf uf;
+
+    @Column(name = "cod_ibge", nullable = false)
+    private String codeIbge;
+
 }

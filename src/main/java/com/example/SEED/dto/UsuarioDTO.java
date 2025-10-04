@@ -10,4 +10,5 @@ public record UsuarioDTO(
         String telefone,
         Date dataCadastro,
         boolean ativo
+        //Não deve exibir a senha
 ) {}
