@@ -54,7 +54,6 @@ public class Usuario implements UserDetails{
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return perfisEstruturas.stream()
-                .filter(UsuarioPerfilEstrutura::isAtivo)
                 .map(UsuarioPerfilEstrutura::getPerfil)
                 .filter(Objects::nonNull)
                 .map(Perfil::getAuthorityName)
@@ -98,4 +97,7 @@ public class Usuario implements UserDetails{
         this.email = email;
         this.senha = senha;
     }
+
+
+
 }

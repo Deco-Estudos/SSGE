@@ -31,5 +31,5 @@ public class Item {
 
     private Boolean obrigatorio;
 
-    private boolean ative;
+    private boolean ativo;
 }
