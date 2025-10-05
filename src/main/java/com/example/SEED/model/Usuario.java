@@ -45,7 +45,6 @@ public class Usuario implements UserDetails{
     @Column(name = "data_cadastro")
     private Date dataCadastro;
 
-    @Column(nullable = false)
     private boolean ativo;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER) //MappedBy usuário pois em UsuarioPerfilEstrutura tem a FK de usuario
@@ -93,11 +92,10 @@ public class Usuario implements UserDetails{
         return this.ativo;
     }
 
-    public Usuario(String email, String senha) {
+    public Usuario(String nome, String email, String senha, String cpf) {
+        this.nome = nome;
         this.email = email;
         this.senha = senha;
+        this.cpf = cpf;
     }
-
-
-
 }

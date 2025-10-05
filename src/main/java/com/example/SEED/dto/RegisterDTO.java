@@ -5,6 +5,7 @@ import com.example.SEED.model.NomePerfil;
 public record RegisterDTO(
         String email,
         String senha,
-        NomePerfil role
+        String nome,
+        String cpf
 ) {
 }
