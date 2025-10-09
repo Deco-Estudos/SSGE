@@ -4,7 +4,9 @@ import com.example.SEED.dto.AuthencicationDTO;
 import com.example.SEED.dto.LoginResponseDTO;
 import com.example.SEED.dto.RegisterDTO;
 import com.example.SEED.infra.security.TokenService;
+import com.example.SEED.model.Perfil;
 import com.example.SEED.model.Usuario;
+import com.example.SEED.repository.PerfilRepository;
 import com.example.SEED.repository.UserRepository;
 import jakarta.validation.Valid;
 
@@ -29,6 +31,8 @@ public class AuthenticationController {
     UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    PerfilRepository perfilRepository;
 
 
     @PostMapping("/login")
@@ -44,9 +48,15 @@ public class AuthenticationController {
         if(userRepository.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = passwordEncoder.encode(data.senha());
-        Usuario novoUsuario = new Usuario(data.nome(), data.email(), encryptedPassword, data.cpf()); // falta colocar role
+
+        Perfil perfil = perfilRepository.findByNomePerfil(data.nomePerfil())
+                .orElseThrow(() -> new RuntimeException("Perfil não encontrado"));
+
+        Usuario novoUsuario = new Usuario(data.nome(), data.email(), encryptedPassword, data.cpf(), perfil); // falta colocar role
         novoUsuario.setAtivo(true);
         userRepository.save(novoUsuario);
+        System.out.println("Perfil do novo usuário: " + novoUsuario.getPerfil());
+
 
         return ResponseEntity.ok().build();
 

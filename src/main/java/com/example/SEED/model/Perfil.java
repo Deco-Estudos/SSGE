@@ -22,7 +22,7 @@ public class Perfil {
 
     private String descricao;
 
-    @Column(name = "nivel_acesso", nullable = false)
+    @Column(name = "nivel_acesso")
     private int nivelAcesso;
 
     // Não vira coluna

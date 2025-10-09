@@ -47,19 +47,13 @@ public class Usuario implements UserDetails{
 
     private boolean ativo;
 
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER) //MappedBy usuário pois em UsuarioPerfilEstrutura tem a FK de usuario
-    private List<UsuarioPerfilEstrutura> perfisEstruturas;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_perfil")
+    Perfil perfil;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return perfisEstruturas.stream()
-                .map(UsuarioPerfilEstrutura::getPerfil)
-                .filter(Objects::nonNull)
-                .map(Perfil::getAuthorityName)
-                .filter(Objects::nonNull)
-                .distinct() // remove duplicados caso existam
-                .map(SimpleGrantedAuthority::new)
-                .toList();
+        return List.of(new SimpleGrantedAuthority(perfil.getAuthorityName()));
     }
 
     @Override
@@ -92,10 +86,11 @@ public class Usuario implements UserDetails{
         return this.ativo;
     }
 
-    public Usuario(String nome, String email, String senha, String cpf) {
+    public Usuario(String nome, String email, String senha, String cpf, Perfil perfil) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.cpf = cpf;
+        this.perfil = perfil;
     }
 }
