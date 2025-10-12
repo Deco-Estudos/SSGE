@@ -10,6 +10,9 @@ import  com.example.SEED.Usuario.Usuario;
 import com.example.SEED.repository.PerfilRepository;
 import com.example.SEED.repository.UserRepository;
 import com.example.SEED.service.RegisterService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,11 @@ public class AuthenticationController {
 
 
     @PostMapping("/login")
+    @Operation(summary = "Login", description = "Essa realiza o login de um usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login efetuado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Não foi possivel realizar o login")
+    })
     public ResponseEntity login(@RequestBody @Valid AuthencicationDTO data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
         var auth = this.authenticationManager.authenticate(usernamePassword);
@@ -48,6 +56,11 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Registrar", description = "Essa realiza o Registro de um usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Registro efetuado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Não foi possivel realizar o Registro")
+    })
     public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
         if(userRepository.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
 
