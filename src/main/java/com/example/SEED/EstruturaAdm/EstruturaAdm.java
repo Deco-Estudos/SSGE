@@ -1,5 +1,7 @@
-package com.example.SEED.model;
+package com.example.SEED.EstruturaAdm;
 
+import com.example.SEED.Municipio.Municipio;
+import com.example.SEED.model.TipoEstrutura;
 import jakarta.persistence.*;
 import lombok.*;
 

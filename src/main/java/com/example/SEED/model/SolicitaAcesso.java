@@ -1,5 +1,8 @@
 package com.example.SEED.model;
 
+import com.example.SEED.EstruturaAdm.EstruturaAdm;
+import com.example.SEED.Perfil.Perfil;
+import  com.example.SEED.Usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 

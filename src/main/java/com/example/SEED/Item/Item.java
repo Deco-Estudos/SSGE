@@ -1,5 +1,6 @@
-package com.example.SEED.model;
+package com.example.SEED.Item;
 
+import com.example.SEED.Classificacao.Classificacao;
 import jakarta.persistence.*;
 import lombok.*;
 

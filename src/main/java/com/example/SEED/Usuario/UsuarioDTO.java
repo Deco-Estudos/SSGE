@@ -1,4 +1,4 @@
-package com.example.SEED.dto;
+package com.example.SEED.Usuario;
 
 import java.util.Date;
 

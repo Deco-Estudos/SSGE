@@ -1,4 +1,4 @@
-package com.example.SEED.dto;
+package com.example.SEED.Uf;
 
 public record UfDTO (
         Long id,

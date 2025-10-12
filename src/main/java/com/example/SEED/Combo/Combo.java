@@ -1,4 +1,4 @@
-package com.example.SEED.model;
+package com.example.SEED.Combo;
 
 
 import jakarta.persistence.*;

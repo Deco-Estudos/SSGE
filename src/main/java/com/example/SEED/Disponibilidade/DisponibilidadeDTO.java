@@ -1,6 +1,7 @@
-package com.example.SEED.dto;
+package com.example.SEED.Disponibilidade;
 
-import com.example.SEED.model.DisponibilidadeStatus;
+import com.example.SEED.Combo.ComboDTO;
+import com.example.SEED.EstruturaAdm.EstruturaAdmDTO;
 
 import java.util.Date;
 

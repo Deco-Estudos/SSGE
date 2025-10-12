@@ -1,4 +1,4 @@
-package com.example.SEED.dto;
+package com.example.SEED.Perfil;
 
 public record PerfilDTO(
         Long id,

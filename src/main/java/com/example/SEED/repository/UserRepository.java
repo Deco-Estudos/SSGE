@@ -1,6 +1,6 @@
 package com.example.SEED.repository;
 
-import com.example.SEED.model.Usuario;
+import  com.example.SEED.Usuario.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;

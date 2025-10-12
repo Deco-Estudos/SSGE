@@ -1,5 +1,7 @@
-package com.example.SEED.model;
+package com.example.SEED.ComboItem;
 
+import com.example.SEED.Combo.Combo;
+import com.example.SEED.Item.Item;
 import jakarta.persistence.*;
 import lombok.*;
 

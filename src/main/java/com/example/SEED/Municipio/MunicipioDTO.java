@@ -1,6 +1,6 @@
-package com.example.SEED.dto;
+package com.example.SEED.Municipio;
 
-import com.example.SEED.model.Uf;
+import com.example.SEED.Uf.Uf;
 
 public record MunicipioDTO(
         Long id,
