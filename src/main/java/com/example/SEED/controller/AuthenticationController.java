@@ -62,12 +62,12 @@ public class AuthenticationController {
         Perfil perfil = perfilRepository.findByNomePerfil(data.nomePerfil())
                 .orElseThrow(() -> new RuntimeException("Perfil não encontrado"));
 
-        if(perfil.getNomePerfil() == NomePerfil.ADM){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Não é possível solicitar perfil ADM via registro");
-        }
+       // if(perfil.getNomePerfil() == NomePerfil.ADM){
+         //   return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Não é possível solicitar perfil ADM via registro");
+        //}
 
-        Usuario novoUsuario = new Usuario(data.nome(), data.email(), encryptedPassword, data.cpf(), perfil); // falta colocar role
-        novoUsuario.setAtivo(true);
+        Usuario novoUsuario = new Usuario(data.nome(), data.email(), encryptedPassword, data.cpf(), data.telefone(), perfil); // falta colocar role
+        novoUsuario.setAtivo(false);
         userRepository.save(novoUsuario);
         System.out.println("Perfil do novo usuário: " + novoUsuario.getPerfil());
 

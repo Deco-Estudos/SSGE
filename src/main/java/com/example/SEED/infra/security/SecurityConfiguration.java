@@ -37,6 +37,10 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+
+
+                        .requestMatchers("/adm**").hasAuthority("ROLE_ADM") //Isso limita as funcionalidades de adm só para adm
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
@@ -50,7 +54,7 @@ public class SecurityConfiguration {
         // se você precisa enviar cookies/credentials, deixe true e NÃO use "*"
         config.setAllowedOrigins(List.of("http://localhost:5173"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*")); // ajustar se quiser limitar headers específicos
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin")); // ajustar se quiser limitar headers específicos
         config.setAllowCredentials(true);
         config.setExposedHeaders(List.of("Authorization", "Content-Type"));
 

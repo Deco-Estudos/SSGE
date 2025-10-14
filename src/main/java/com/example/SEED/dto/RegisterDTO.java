@@ -7,6 +7,7 @@ public record RegisterDTO(
         String senha,
         String nome,
         String cpf,
+        String telefone,
         NomePerfil nomePerfil
 ) {
 }

@@ -86,11 +86,12 @@ public class Usuario implements UserDetails{
         return this.ativo;
     }
 
-    public Usuario(String nome, String email, String senha, String cpf, Perfil perfil) {
+    public Usuario(String nome, String email, String senha, String cpf, String telefone, Perfil perfil) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.cpf = cpf;
+        this.telefone = telefone;
         this.perfil = perfil;
     }
 }
