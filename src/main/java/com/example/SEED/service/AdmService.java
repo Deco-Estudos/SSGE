@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.example.SEED.dto.UsuarioDTO;
-import com.example.SEED.model.Usuario;
+import com.example.SEED.Usuario.Usuario;
+import com.example.SEED.Usuario.UsuarioDTO;
 import com.example.SEED.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

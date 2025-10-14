@@ -1,6 +1,6 @@
 package com.example.SEED.controller;
 
-import com.example.SEED.dto.UsuarioDTO;
+import com.example.SEED.Usuario.UsuarioDTO;
 import com.example.SEED.service.AdmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
