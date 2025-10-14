@@ -1,5 +1,6 @@
-package com.example.SEED.model;
+package com.example.SEED.Usuario;
 
+import com.example.SEED.Perfil.Perfil;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 

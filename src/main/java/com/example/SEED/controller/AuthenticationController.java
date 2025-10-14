@@ -5,11 +5,14 @@ import com.example.SEED.dto.LoginResponseDTO;
 import com.example.SEED.dto.RegisterDTO;
 import com.example.SEED.infra.security.TokenService;
 import com.example.SEED.model.NomePerfil;
-import com.example.SEED.model.Perfil;
-import com.example.SEED.model.Usuario;
+import com.example.SEED.Perfil.Perfil;
+import  com.example.SEED.Usuario.Usuario;
 import com.example.SEED.repository.PerfilRepository;
 import com.example.SEED.repository.UserRepository;
 import com.example.SEED.service.RegisterService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +21,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthenticationController {
     @Autowired
     AuthenticationManager authenticationManager;
@@ -40,6 +42,11 @@ public class AuthenticationController {
 
 
     @PostMapping("/login")
+    @Operation(summary = "Login", description = "Essa realiza o login de um usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login efetuado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Não foi possivel realizar o login")
+    })
     public ResponseEntity login(@RequestBody @Valid AuthencicationDTO data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
         var auth = this.authenticationManager.authenticate(usernamePassword);
@@ -48,6 +55,11 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Registrar", description = "Essa realiza o Registro de um usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Registro efetuado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Não foi possivel realizar o Registro")
+    })
     public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
         if(userRepository.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
 

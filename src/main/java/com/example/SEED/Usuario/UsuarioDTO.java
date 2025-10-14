@@ -1,4 +1,4 @@
-package com.example.SEED.dto;
+package com.example.SEED.Usuario;
 
 import com.example.SEED.model.NomePerfil;
 

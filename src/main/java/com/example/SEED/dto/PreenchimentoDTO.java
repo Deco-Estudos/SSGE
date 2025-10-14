@@ -1,5 +1,10 @@
 package com.example.SEED.dto;
 
+import com.example.SEED.ComboItem.ComboItemDTO;
+import com.example.SEED.EstruturaAdm.EstruturaAdmDTO;
+import com.example.SEED.Item.ItemDTO;
+import  com.example.SEED.Usuario.UsuarioDTO;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -8,7 +13,7 @@ public record PreenchimentoDTO(
         ItemDTO itemDTO,
         UsuarioDTO usuarioDTO,
         EstruturaAdmDTO estruturaAdmDTO,
-        CompetenciaDTO competenciaDTO,
+        ComboItemDTO.CompetenciaDTO competenciaDTO,
         BigDecimal valor,
         Date dataPreenchimento,
         String observacao

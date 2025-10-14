@@ -1,5 +1,6 @@
-package com.example.SEED.dto;
+package com.example.SEED.EstruturaAdm;
 
+import com.example.SEED.Municipio.MunicipioDTO;
 import com.example.SEED.model.TipoEstrutura;
 
 public record EstruturaAdmDTO(

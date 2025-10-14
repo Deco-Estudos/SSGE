@@ -1,4 +1,6 @@
-package com.example.SEED.dto;
+package com.example.SEED.Item;
+
+import com.example.SEED.Classificacao.ClassificacaoDTO;
 
 public record ItemDTO(
         Long id,

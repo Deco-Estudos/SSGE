@@ -1,5 +1,7 @@
-package com.example.SEED.model;
+package com.example.SEED.Disponibilidade;
 
+import com.example.SEED.Combo.Combo;
+import com.example.SEED.EstruturaAdm.EstruturaAdm;
 import jakarta.persistence.*;
 import lombok.*;
 

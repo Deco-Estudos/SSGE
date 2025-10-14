@@ -25,6 +25,12 @@ public class SecurityConfiguration {
     @Autowired
     SecurityFilter securityFilter;
 
+    private static final String[] SWAGGER_WHITELIST = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -36,6 +42,8 @@ public class SecurityConfiguration {
                         // libera preflight e endpoints auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(SWAGGER_WHITELIST).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/swagger-ui.html").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
 
 

@@ -1,5 +1,6 @@
-package com.example.SEED.model;
+package com.example.SEED.Perfil;
 
+import com.example.SEED.model.NomePerfil;
 import jakarta.persistence.*;
 import lombok.*;
 
