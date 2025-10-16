@@ -16,11 +16,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+
 
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfiguration {
     @Autowired
     SecurityFilter securityFilter;
@@ -45,6 +48,9 @@ public class SecurityConfiguration {
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .requestMatchers(HttpMethod.POST, "/swagger-ui.html").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+
+
+
 
 
                         .requestMatchers("/adm**").hasAuthority("ROLE_ADM") //Isso limita as funcionalidades de adm só para adm
