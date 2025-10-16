@@ -17,6 +17,7 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
+    // VERSÃO CORRIGIDA (COMPLETA) ✅
     public String generateToken(Usuario usuario){
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -24,10 +25,12 @@ public class TokenService {
                     .withIssuer("SEED")
                     .withSubject(usuario.getEmail())
                     .withExpiresAt(genExpirationDate())
+                    // --- ADICIONE ESTA LINHA ---
+                    .withClaim("role", usuario.getPerfil().getNomePerfil().toString())
                     .sign(algorithm);
             return token;
         } catch (JWTCreationException exception){
-            throw new RuntimeException("Erro ao tentar gerar token", exception);
+            throw new RuntimeException("Erro ao gerar token", exception);
         }
     }
 
