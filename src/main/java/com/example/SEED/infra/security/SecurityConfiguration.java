@@ -53,7 +53,7 @@ public class SecurityConfiguration {
 
 
 
-                        .requestMatchers("/adm**").hasAuthority("ROLE_ADM") //Isso limita as funcionalidades de adm só para adm
+                        .requestMatchers("/adm/**").hasAuthority("ROLE_ADM") //Isso limita as funcionalidades de adm só para adm
 
                         .anyRequest().authenticated()
                 )

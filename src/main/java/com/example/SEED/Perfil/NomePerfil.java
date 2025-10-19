@@ -1,4 +1,4 @@
-package com.example.SEED.model;
+package com.example.SEED.Perfil;
 
 public enum NomePerfil {
     //No Spring Security, o sistema espera que as roles venham prefixadas com "ROLE_"

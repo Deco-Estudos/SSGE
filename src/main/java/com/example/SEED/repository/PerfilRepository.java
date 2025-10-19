@@ -1,6 +1,6 @@
 package com.example.SEED.repository;
 
-import com.example.SEED.model.NomePerfil;
+import com.example.SEED.Perfil.NomePerfil;
 import com.example.SEED.Perfil.Perfil;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

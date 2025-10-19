@@ -1,6 +1,6 @@
 package com.example.SEED.Usuario;
 
-import com.example.SEED.model.NomePerfil;
+import com.example.SEED.Perfil.NomePerfil;
 
 import java.util.Date;
 

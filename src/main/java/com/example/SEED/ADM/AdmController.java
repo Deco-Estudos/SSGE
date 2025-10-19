@@ -1,4 +1,4 @@
-package com.example.SEED.controller;
+package com.example.SEED.ADM;
 
 import com.example.SEED.Usuario.UsuarioDTO;
 import com.example.SEED.service.AdmService;

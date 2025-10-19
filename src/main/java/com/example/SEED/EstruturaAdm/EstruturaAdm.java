@@ -1,7 +1,6 @@
 package com.example.SEED.EstruturaAdm;
 
 import com.example.SEED.Municipio.Municipio;
-import com.example.SEED.model.TipoEstrutura;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,14 +11,14 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "estrutura_adm")
-
 public class EstruturaAdm {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_estrutura_adm")
     private Long id;
 
-    @Column(name = "nome",nullable = false)
+    @Column(name = "nome", nullable = false)
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -30,6 +29,8 @@ public class EstruturaAdm {
     @JoinColumn(name = "id_municipio", nullable = false)
     private Municipio municipio;
 
-
+    @Column(nullable = false)
     private Boolean ativo;
+
+    private String cep;
 }

@@ -1,6 +1,6 @@
 package com.example.SEED.dto;
 
-import com.example.SEED.model.NomePerfil;
+import com.example.SEED.Perfil.NomePerfil;
 
 public record RegisterDTO(
         String email,

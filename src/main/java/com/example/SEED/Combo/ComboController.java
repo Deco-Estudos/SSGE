@@ -1,5 +1,7 @@
 package com.example.SEED.Combo;
 
+import com.example.SEED.ComboDestino.ComboDestinoDTO;
+import com.example.SEED.ComboDestino.ComboDestinoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,9 @@ public class ComboController {
     // --- INJEÇÃO DO NOVO SERVICE ---
     @Autowired
     private ComboItemService comboItemService;
+
+    @Autowired
+    private ComboDestinoService comboDestinoService;
 
     @PostMapping
     public ResponseEntity<ComboDTO> createCombo(@Valid @RequestBody ComboDTO comboDTO) {
@@ -88,5 +93,15 @@ public class ComboController {
     public ResponseEntity<Void> removeItemFromCombo(@PathVariable Long comboItemId) {
         comboItemService.removeItemFromCombo(comboItemId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{comboId}/setor/{setorId}")
+    public ResponseEntity<ComboDestinoDTO> vincularComboAoSetor(
+            @PathVariable Long comboId,
+            @PathVariable Long setorId,
+            @RequestParam(required = false) Long estruturaId) {
+
+        comboDestinoService.enviarCombo(comboId, setorId, estruturaId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

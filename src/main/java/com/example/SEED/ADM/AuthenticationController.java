@@ -1,10 +1,10 @@
-package com.example.SEED.controller;
+package com.example.SEED.ADM;
 
 import com.example.SEED.dto.AuthencicationDTO;
 import com.example.SEED.dto.LoginResponseDTO;
 import com.example.SEED.dto.RegisterDTO;
 import com.example.SEED.infra.security.TokenService;
-import com.example.SEED.model.NomePerfil;
+import com.example.SEED.Perfil.NomePerfil;
 import com.example.SEED.Perfil.Perfil;
 import  com.example.SEED.Usuario.Usuario;
 import com.example.SEED.repository.PerfilRepository;
@@ -74,9 +74,9 @@ public class AuthenticationController {
         Perfil perfil = perfilRepository.findByNomePerfil(data.nomePerfil())
                 .orElseThrow(() -> new RuntimeException("Perfil não encontrado"));
 
-        if(perfil.getNomePerfil() == NomePerfil.ADM){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Não é possível solicitar perfil ADM via registro");
-        }
+       // if(perfil.getNomePerfil() == NomePerfil.ADM){
+         //   return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Não é possível solicitar perfil ADM via registro");
+        //}
 
         Usuario novoUsuario = new Usuario(data.nome(), data.email(), encryptedPassword, data.cpf(), data.telefone(), perfil); // falta colocar role
         novoUsuario.setAtivo(false);
