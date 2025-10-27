@@ -3,6 +3,7 @@ package com.example.SEED.EstruturaAdm;
 import com.example.SEED.Municipio.Municipio;
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.List;
 
 @Setter
 @Getter
@@ -32,5 +33,13 @@ public class EstruturaAdm {
     @Column(nullable = false)
     private Boolean ativo;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_estrutura_pai")
+    private EstruturaAdm estruturaPai;
+
     private String cep;
+
+    @OneToMany(mappedBy = "estruturaAdm", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<com.example.SEED.Setor.Setor> setores;
 }
+

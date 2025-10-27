@@ -1,5 +1,7 @@
 package com.example.SEED.EstruturaAdm;
 
+import com.example.SEED.Municipio.MunicipioDTO;
+import com.example.SEED.Municipio.MunicipioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,9 @@ public class EstruturaAdmController {
 
     @Autowired
     private EstruturaAdmService service;
+
+    @Autowired
+    MunicipioRepository municipioRepository;
 
     @PostMapping
     public ResponseEntity<EstruturaAdmDTO> createEstrutura(@Valid @RequestBody EstruturaAdmDTO dto) {
@@ -43,5 +48,14 @@ public class EstruturaAdmController {
     public ResponseEntity<Void> deleteEstrutura(@PathVariable Long id) {
         service.deletarEstrutura(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/municipios")
+    public ResponseEntity<List<MunicipioDTO>> listarMunicipios() {
+        List<MunicipioDTO> municipios = municipioRepository.findAll()
+                .stream()
+                .map(m -> new MunicipioDTO(m.getId(), m.getNome()))
+                .toList();
+        return ResponseEntity.ok(municipios);
     }
 }

@@ -1,10 +1,12 @@
 package com.example.SEED.Combo;
 
 
+import com.example.SEED.ComboDestino.ComboDestino;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -30,5 +32,8 @@ public class Combo {
 
     @Column(name = "data_criacao", nullable = false)
     private Date dataCriacao;
+
+    @OneToMany(mappedBy = "combo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ComboDestino> destinos;
 
 }

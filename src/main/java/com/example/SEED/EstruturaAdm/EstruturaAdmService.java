@@ -20,12 +20,19 @@ public class EstruturaAdmService {
         Municipio municipio = municipioRepository.findById(data.municipio().id())
                 .orElseThrow(() -> new RuntimeException("Município não encontrado"));
 
+        EstruturaAdm estruturaPai = null;
+        if (data.estruturaPaiId() != null) {
+            estruturaPai = estruturaAdmRepository.findById(data.estruturaPaiId())
+                    .orElseThrow(() -> new RuntimeException("Estrutura pai não encontrada"));
+        }
+
         EstruturaAdm estruturaAdm = EstruturaAdm.builder()
                 .name(data.name())
                 .tipo(data.tipo())
                 .municipio(municipio)
                 .ativo(data.ativo())
                 .cep(data.cep())
+                .estruturaPai(estruturaPai)
                 .build();
 
         EstruturaAdm saved = estruturaAdmRepository.save(estruturaAdm);
@@ -42,10 +49,17 @@ public class EstruturaAdmService {
             existing.setMunicipio(municipio);
         }
 
+        EstruturaAdm estruturaPai = null;
+        if (data.estruturaPaiId() != null) {
+            estruturaPai = estruturaAdmRepository.findById(data.estruturaPaiId())
+                    .orElseThrow(() -> new RuntimeException("Estrutura pai não encontrada"));
+        }
+
         existing.setName(data.name());
         existing.setTipo(data.tipo());
         existing.setAtivo(data.ativo());
         existing.setCep(data.cep());
+        existing.setEstruturaPai(estruturaPai);
 
         EstruturaAdm updated = estruturaAdmRepository.save(existing);
         return toDTO(updated);
@@ -79,7 +93,9 @@ public class EstruturaAdmService {
                         e.getMunicipio().getNome()
                 ),
                 e.getAtivo(),
-                e.getCep()
+                e.getCep(),
+                e.getEstruturaPai() != null ? e.getEstruturaPai().getId() : null
         );
     }
+
 }

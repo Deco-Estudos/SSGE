@@ -7,6 +7,7 @@ public record EstruturaAdmDTO(
         String name,
         TipoEstrutura tipo,
         MunicipioDTO municipio,
-        boolean ativo,
-        String cep
+        Boolean ativo,
+        String cep,
+        Long estruturaPaiId // novo campo opcional
 ) {}

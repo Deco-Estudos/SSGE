@@ -1,5 +1,7 @@
 package com.example.SEED.Combo;
 
+import com.example.SEED.ComboDestino.ComboDestino;
+import com.example.SEED.ComboDestino.ComboDestinoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,9 @@ public class ComboService {
 
     @Autowired
     private ComboRepository comboRepository;
+
+    @Autowired
+    private ComboDestinoRepository comboDestinoRepository;
 
     // Metodo para converter Entidade para DTO
     private ComboDTO toDTO(Combo combo) {
@@ -66,11 +71,17 @@ public class ComboService {
     }
 
     @Transactional
-    public void delete(Long id) {
-        if (!comboRepository.existsById(id)) {
-            throw new EntityNotFoundException("Combo não encontrado com o ID: " + id);
+    public void delete(Long comboId) {
+        Combo combo = comboRepository.findById(comboId)
+                .orElseThrow(() -> new EntityNotFoundException("Combo não encontrado"));
+
+        // Deleta todos os destinos associados
+        List<ComboDestino> destinos = comboDestinoRepository.findByCombo(combo);
+        if (!destinos.isEmpty()) {
+            comboDestinoRepository.deleteAll(destinos);
         }
-        // OBS: Em vez de deletar, uma abordagem comum é a "exclusão lógica".
-        comboRepository.deleteById(id);
+
+        // Agora deleta o combo
+        comboRepository.delete(combo);
     }
 }
