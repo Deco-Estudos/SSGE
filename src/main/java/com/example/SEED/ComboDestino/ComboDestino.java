@@ -3,6 +3,7 @@ package com.example.SEED.ComboDestino;
 import com.example.SEED.Combo.Combo;
 import com.example.SEED.EstruturaAdm.EstruturaAdm;
 import com.example.SEED.Setor.Setor;
+import com.example.SEED.Competencia.Competencia;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -25,14 +26,19 @@ public class ComboDestino {
     private Combo combo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_estrutura_adm", nullable = false)
+    @JoinColumn(name = "id_estrutura_adm", nullable = true)
     private EstruturaAdm estruturaAdm;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_setor")
     private Setor setor; // opcional
 
-    private LocalDateTime dataEnvio = LocalDateTime.now();
+    @ManyToOne
+    @JoinColumn(name = "id_competencia")
+    private Competencia competencia;
+
+    @Column(name = "data_envio")
+    private LocalDateTime dataEnvio;
 
     private Boolean ativo = true;
 }

@@ -2,7 +2,7 @@ package com.example.SEED.ComboItem;
 
 import com.example.SEED.Combo.ComboDTO;
 import com.example.SEED.Item.ItemDTO;
-import com.example.SEED.model.CompetenciaStatus;
+import com.example.SEED.Competencia.CompetenciaStatus;
 
 import java.util.Date;
 

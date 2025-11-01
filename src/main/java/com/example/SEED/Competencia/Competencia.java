@@ -1,8 +1,9 @@
-package com.example.SEED.model;
+package com.example.SEED.Competencia;
 
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Setter
@@ -25,10 +26,10 @@ public class Competencia {
     private String mes;
 
     @Column(name = "data_inicio", nullable = false)
-    private Date dataInicio;
+    private LocalDateTime dataInicio;
 
     @Column(name = "data_fim", nullable = false)
-    private Date dataFim;
+    private LocalDateTime dataFim;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

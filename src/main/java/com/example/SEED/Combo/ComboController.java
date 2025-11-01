@@ -2,6 +2,7 @@ package com.example.SEED.Combo;
 
 import com.example.SEED.ComboDestino.ComboDestinoDTO;
 import com.example.SEED.ComboDestino.ComboDestinoService;
+import com.example.SEED.ComboDestino.ComboEnvioDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -95,13 +96,25 @@ public class ComboController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{comboId}/setor/{setorId}")
-    public ResponseEntity<ComboDestinoDTO> vincularComboAoSetor(
-            @PathVariable Long comboId,
-            @PathVariable Long setorId,
-            @RequestParam(required = false) Long estruturaId) {
 
-        comboDestinoService.enviarCombo(comboId, setorId, estruturaId);
+    @PostMapping("/{comboId}/estrutura/{estruturaId}")
+    public ResponseEntity<Void> enviarComboParaEstrutura(
+            @PathVariable Long comboId,
+            @PathVariable Long estruturaId,
+            @RequestBody ComboEnvioDTO comboEnvioDTO) {
+
+        System.out.println("Combo recebido: " + comboId);
+        System.out.println("Estrutura recebida: " + estruturaId);
+        System.out.println("Setores recebidos: " + comboEnvioDTO.getSetoresId());
+
+        comboDestinoService.enviarComboParaEstrutura(
+                comboId,
+                estruturaId,
+                comboEnvioDTO.getSetoresId(),
+                comboEnvioDTO.getDataInicio(),
+                comboEnvioDTO.getDataFim()
+        );
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

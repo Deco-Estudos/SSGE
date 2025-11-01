@@ -1,5 +1,6 @@
 package com.example.SEED.model;
 
+import com.example.SEED.Competencia.Competencia;
 import com.example.SEED.EstruturaAdm.EstruturaAdm;
 import com.example.SEED.Item.Item;
 import  com.example.SEED.Usuario.Usuario;
