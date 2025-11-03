@@ -12,6 +12,7 @@ public record ComboItemDTO(
         ItemDTO itemDTO,
         String ordem,
         Boolean obrigatorio
+
 ) {
     public static record CompetenciaDTO(
             Long id,

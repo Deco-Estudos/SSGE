@@ -5,7 +5,6 @@ import com.example.SEED.Item.Item;
 import  com.example.SEED.Usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.Date;
 
 @Getter
@@ -35,6 +34,9 @@ public class SolicitaItemCombo {
 
     @Column(nullable = false)
     private String justificativa;
+
+    @Column
+    private Integer valor; // Integer permite valores nulos
 
     @Column(name = "data_solicitacao", nullable = false)
     private Date dataSolicitacao;

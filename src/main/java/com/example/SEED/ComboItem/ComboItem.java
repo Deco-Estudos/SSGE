@@ -30,4 +30,6 @@ public class ComboItem {
     private String ordem;
 
     private Boolean obrigatorio;
+
+    private Integer Valor;
 }
