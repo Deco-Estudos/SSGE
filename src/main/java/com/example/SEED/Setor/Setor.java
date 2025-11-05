@@ -1,8 +1,11 @@
 package com.example.SEED.Setor;
 
 import com.example.SEED.EstruturaAdm.EstruturaAdm;
+import com.example.SEED.Usuario.Usuario; // 1. IMPORTADO
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Set; // 2. IMPORTADO
 
 @Entity
 @Getter
@@ -26,5 +29,9 @@ public class Setor {
     private EstruturaAdm estruturaAdm;
 
     private String descricao;
-}
 
+
+    @ManyToMany(mappedBy = "setores")
+    private Set<Usuario> responsaveis;
+
+}

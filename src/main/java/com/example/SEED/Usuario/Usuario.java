@@ -1,17 +1,17 @@
 package com.example.SEED.Usuario;
 
 import com.example.SEED.Perfil.Perfil;
+import com.example.SEED.Setor.Setor; // 1. IMPORTADO
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
+import java.util.Set; // 2. IMPORTADO
 
 @Getter
 @Setter
@@ -20,8 +20,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "usuario")
+public class Usuario implements UserDetails {
 
-public class Usuario implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
@@ -43,6 +43,7 @@ public class Usuario implements UserDetails{
     private String telefone;
 
     @Column(name = "data_cadastro")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dataCadastro;
 
     private boolean ativo;
@@ -51,8 +52,19 @@ public class Usuario implements UserDetails{
     @JoinColumn(name = "id_perfil")
     Perfil perfil;
 
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "usuario_setor",
+            joinColumns = @JoinColumn(name = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "id_setor")
+    )
+    private Set<Setor> setores;
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+
         return List.of(new SimpleGrantedAuthority(perfil.getAuthorityName()));
     }
 
@@ -63,28 +75,29 @@ public class Usuario implements UserDetails{
 
     @Override
     public String getUsername() {
-        return this.email; //Já que o usuário faz login com email, plmns eu acho
+        return this.email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
         return this.ativo;
     }
+
 
     public Usuario(String nome, String email, String senha, String cpf, String telefone, Perfil perfil) {
         this.nome = nome;
@@ -93,5 +106,7 @@ public class Usuario implements UserDetails{
         this.cpf = cpf;
         this.telefone = telefone;
         this.perfil = perfil;
+        this.dataCadastro = new Date();
+        this.ativo = false;
     }
 }
