@@ -4,7 +4,6 @@ import com.example.SEED.Municipio.Municipio;
 import com.example.SEED.Municipio.MunicipioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -77,6 +76,14 @@ public class EstruturaAdmService {
                 .toList();
     }
 
+
+    public List<EstruturaAdmDTO> listarEstruturasAtivas() {
+        return estruturaAdmRepository.findByAtivoTrue().stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+
     public List<EstruturaAdmDTO> listarPorTipo(TipoEstrutura tipo) {
         return estruturaAdmRepository.findByTipo(tipo).stream()
                 .map(this::toDTO)
@@ -97,5 +104,4 @@ public class EstruturaAdmService {
                 e.getEstruturaPai() != null ? e.getEstruturaPai().getId() : null
         );
     }
-
 }
