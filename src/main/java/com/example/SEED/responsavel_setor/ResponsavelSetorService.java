@@ -53,6 +53,7 @@ public class ResponsavelSetorService {
 
         LocalDateTime agora = LocalDateTime.now();
 
+
         return destinos.stream()
 
                 .filter(destino -> {
@@ -62,7 +63,9 @@ public class ResponsavelSetorService {
                             agora.isAfter(c.getDataInicio()) &&
                             agora.isBefore(c.getDataFim());
                 })
+
                 .map(ComboDestino::getCombo)
+
                 .distinct()
 
                 .map(this::toDTO)
