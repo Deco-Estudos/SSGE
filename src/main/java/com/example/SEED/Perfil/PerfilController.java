@@ -20,6 +20,9 @@ public class PerfilController {
 
     @GetMapping
     public ResponseEntity<List<Perfil>> listarPerfis() {
-        return ResponseEntity.ok(perfilRepository.findAll());
+
+        // Em vez de buscar todos, buscamos todos EXCETO o ADM.
+        List<Perfil> perfisFiltrados = perfilRepository.findByNomePerfilNot(NomePerfil.ADM);
+        return ResponseEntity.ok(perfisFiltrados);
     }
 }
