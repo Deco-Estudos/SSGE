@@ -17,7 +17,7 @@ public class ComboDestinoUsuarioController {
 
     // 🔹 Lista todos os combos destinados ao responsável de setor logado
     @GetMapping
-    public ResponseEntity<List<ComboDestino>> listarCombosDoUsuario() {
+    public ResponseEntity<List<ComboDestinoUsuarioDTO>> listarCombosDoUsuario() {
         return ResponseEntity.ok(comboDestinoUsuarioService.listarCombosDoUsuario());
     }
 

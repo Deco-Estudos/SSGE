@@ -29,20 +29,39 @@ public class ComboDestinoUsuarioService {
     @Autowired
     private ComboItemRepository comboItemRepository;
 
-    public List<ComboDestino> listarCombosDoUsuario() {
+    public List<ComboDestinoUsuarioDTO> listarCombosDoUsuario() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Usuario usuario = userRepository.findUsuarioByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado: " + email));
 
-        // Busca todos os setores em que o usuário é responsável
         List<Long> idsSetores = usuario.getSetores()
                 .stream()
                 .map(s -> s.getId())
                 .toList();
 
-        return comboDestinoRepository.findBySetorIdInAndAtivoTrue(idsSetores);
+        List<ComboDestino> combos = comboDestinoRepository.findBySetorIdInAndAtivoTrue(idsSetores);
+
+        System.out.println(">>> findBySetorIdInAndAtivoTrue retornou size=" + combos.size());
+        combos.forEach(cd -> System.out.println(
+                "   cd.id=" + cd.getId()
+                        + " combo.id=" + (cd.getCombo() != null ? cd.getCombo().getId() : "null")
+                        + " setor.id=" + (cd.getSetor() != null ? cd.getSetor().getId() : "null")
+                        + " ativo=" + cd.getAtivo()
+        ));
+
+        return combos.stream()
+                .map(cd -> new ComboDestinoUsuarioDTO(
+                        cd.getId(),
+                        cd.getCombo() != null ? cd.getCombo().getId() : null,
+                        cd.getCombo() != null ? cd.getCombo().getNomeCombo() : null,
+                        cd.getSetor() != null ? cd.getSetor().getId() : null,
+                        cd.getSetor() != null ? cd.getSetor().getNome() : null,
+                        cd.getDataEnvio()
+                ))
+                .toList();
     }
+
 
     public List<ItemDTO> listarItensDoCombo(Long comboId) {
         Combo combo = comboRepository.findById(comboId)
