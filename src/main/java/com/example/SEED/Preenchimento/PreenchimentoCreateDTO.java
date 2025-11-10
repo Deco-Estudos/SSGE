@@ -1,2 +1,9 @@
-package com.example.SEED.Preenchimento;public record PreenchimentoCreateDTO() {
-}
+package com.example.SEED.Preenchimento;
+
+import java.math.BigDecimal;
+
+public record PreenchimentoCreateDTO(
+        Long itemId,
+        BigDecimal valor,
+        String observacao
+) {}

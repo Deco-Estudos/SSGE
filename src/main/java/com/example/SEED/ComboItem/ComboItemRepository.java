@@ -24,4 +24,6 @@ public interface ComboItemRepository extends JpaRepository<ComboItem, Long> {
      * @return true se a associação já existe, false caso contrário.
      */
     boolean existsByComboIdAndItemId(Long comboId, Long itemId);
+
+    List<ComboItem> findByComboId(Long comboId);
 }

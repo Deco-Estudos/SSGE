@@ -1,4 +1,4 @@
-package com.example.SEED.model;
+package com.example.SEED.Preenchimento;
 
 import com.example.SEED.Competencia.Competencia;
 import com.example.SEED.EstruturaAdm.EstruturaAdm;
