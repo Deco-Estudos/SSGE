@@ -36,6 +36,9 @@ public class SolicitaItemCombo {
     @Column(nullable = false)
     private String justificativa;
 
+    @Column
+    private Integer valor;
+
     @Column(name = "data_solicitacao", nullable = false)
     private Date dataSolicitacao;
 

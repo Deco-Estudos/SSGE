@@ -27,16 +27,20 @@ public class ComboItemService {
     @Autowired
     private ItemRepository itemRepository;
 
-    // Método de conversão para a resposta da API
+
     private ComboItemResponseDTO toResponseDTO(ComboItem comboItem) {
         Item item = comboItem.getItem();
         Classificacao classificacao = item.getClassificacao();
+        ClassificacaoDTO classificacaoDTO = null;
 
-        ClassificacaoDTO classificacaoDTO = new ClassificacaoDTO(
-                classificacao.getId(),
-                classificacao.getNomeClassificacao(),
-                classificacao.getDescricao()
-        );
+
+        if (classificacao != null) {
+            classificacaoDTO = new ClassificacaoDTO(
+                    classificacao.getId(),
+                    classificacao.getNomeClassificacao(),
+                    classificacao.getDescricao()
+            );
+        }
 
         ItemDTO itemDTO = new ItemDTO(
                 item.getId(),
@@ -52,46 +56,64 @@ public class ComboItemService {
                 comboItem.getId(),
                 comboItem.getOrdem(),
                 comboItem.getObrigatorio(),
+                comboItem.getValor(), // 1. CAMPO 'VALOR' INCLUÍDO
                 itemDTO
         );
     }
 
     @Transactional
     public ComboItemResponseDTO addItemToCombo(Long comboId, AddComboItemRequestDTO requestDTO) {
-        // 1. Validar se o item já não está no combo para evitar duplicatas
+
+
+        int ordemNum;
+        try {
+            ordemNum = Integer.parseInt(requestDTO.ordem());
+            if (ordemNum < 1) {
+                // Esta linha impede números negativos ou zero
+                throw new IllegalArgumentException("A ordem deve ser um número maior ou igual a 1.");
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("A ordem deve ser um valor numérico (Ex: '1', '2', etc.).");
+        }
+
+        // 2.1 Validação de ordem repetida
+        if (comboItemRepository.existsByComboIdAndOrdem(comboId, requestDTO.ordem())) {
+            throw new IllegalStateException("A ordem '" + requestDTO.ordem() + "' já está em uso neste kit.");
+        }
+
+
+        // 3. Validar se o item já não está no combo
         if (comboItemRepository.existsByComboIdAndItemId(comboId, requestDTO.itemId())) {
             throw new IllegalStateException("Este item já foi adicionado a este combo.");
         }
 
-        // 2. Buscar as entidades principais (Combo e Item)
+
         Combo combo = comboRepository.findById(comboId)
                 .orElseThrow(() -> new EntityNotFoundException("Combo não encontrado com o ID: " + comboId));
 
         Item item = itemRepository.findById(requestDTO.itemId())
                 .orElseThrow(() -> new EntityNotFoundException("Item não encontrado com o ID: " + requestDTO.itemId()));
 
-        // 3. Criar a nova entidade de associação
+
         ComboItem newComboItem = new ComboItem();
         newComboItem.setCombo(combo);
         newComboItem.setItem(item);
         newComboItem.setOrdem(requestDTO.ordem());
         newComboItem.setObrigatorio(requestDTO.obrigatorio());
+        newComboItem.setValor(requestDTO.valor());
 
-        // 4. Salvar no banco
+
         ComboItem savedComboItem = comboItemRepository.save(newComboItem);
 
-        // 5. Retornar o DTO de resposta
+
         return toResponseDTO(savedComboItem);
     }
 
     @Transactional(readOnly = true)
     public List<ComboItemResponseDTO> getItemsForCombo(Long comboId) {
-        // Valida se o combo existe antes de buscar os itens
         if (!comboRepository.existsById(comboId)) {
             throw new EntityNotFoundException("Combo não encontrado com o ID: " + comboId);
         }
-
-        // Usa o método customizado do repositório para buscar e ordenar
         return comboItemRepository.findByComboIdOrderByOrdem(comboId).stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
@@ -99,7 +121,6 @@ public class ComboItemService {
 
     @Transactional
     public void removeItemFromCombo(Long comboItemId) {
-        // O ID aqui é o da própria tabela combo_item
         if (!comboItemRepository.existsById(comboItemId)) {
             throw new EntityNotFoundException("Associação Item-Combo não encontrada com o ID: " + comboItemId);
         }

@@ -26,8 +26,11 @@ public class ComboItem {
     @JoinColumn(name = "id_item", nullable = false)
     private Item item;
 
+
     @Column(nullable = false)
     private String ordem;
+
+    private Integer Valor;
 
     private Boolean obrigatorio;
 }
