@@ -1,5 +1,6 @@
 package com.example.SEED.ComboDestino;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record ComboDestinoUsuarioDTO(
@@ -8,5 +9,7 @@ public record ComboDestinoUsuarioDTO(
         String nomeCombo,
         Long setorId,
         String nomeSetor,
-        LocalDateTime dataEnvio
+        LocalDateTime dataEnvio,
+        LocalDate dataFim // renomeou
 ) {}
+
