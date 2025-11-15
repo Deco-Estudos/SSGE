@@ -110,11 +110,10 @@ public class ComboController {
         comboDestinoService.enviarComboParaEstrutura(
                 comboId,
                 estruturaId,
-                comboEnvioDTO.getSetoresId(),
-                comboEnvioDTO.getDataInicio(),
-                comboEnvioDTO.getDataFim()
+                comboEnvioDTO.getSetoresId()
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
 }

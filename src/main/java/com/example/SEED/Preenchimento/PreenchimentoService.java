@@ -2,6 +2,7 @@ package com.example.SEED.Preenchimento;
 
 import com.example.SEED.ComboDestino.ComboDestino;
 import com.example.SEED.ComboDestino.ComboDestinoRepository;
+import com.example.SEED.Competencia.Competencia;
 import com.example.SEED.Item.Item;
 import com.example.SEED.Item.ItemRepository;
 import com.example.SEED.Usuario.Usuario;
@@ -11,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -29,20 +31,26 @@ public class PreenchimentoService {
     @Autowired
     private UserRepository userRepository;
 
-    /**
-     * Cria novos preenchimentos para um combo destino.
-     */
+    // ============================================================
+    // 🟦 MÉTODO 1 — SALVAR PRIMEIRO PREENCHIMENTO
+    // ============================================================
     @Transactional
     public void salvarPreenchimentos(Long comboDestinoId, List<PreenchimentoCreateDTO> preenchimentosDTO) {
-        ComboDestino comboDestino = comboDestinoRepository.findById(comboDestinoId).orElse(null);
-        if (comboDestino == null) return;
 
-        // ✅ Recupera o usuário autenticado
+        ComboDestino comboDestino = comboDestinoRepository.findById(comboDestinoId)
+                .orElseThrow(() -> new RuntimeException("ComboDestino não encontrado."));
+
+        // Agora pega a competência: comboDestino → combo → competencia
+        Competencia competencia = comboDestino.getCombo().getCompetencia();
+        validarCompetenciaAberta(competencia);
+
+        // usuário logado
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Usuario usuario = userRepository.findUsuarioByEmail(email).orElse(null);
-        if (usuario == null) return;
+        Usuario usuario = userRepository.findUsuarioByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
         for (PreenchimentoCreateDTO dto : preenchimentosDTO) {
+
             Item item = itemRepository.findById(dto.itemId()).orElse(null);
             if (item == null) continue;
 
@@ -50,7 +58,7 @@ public class PreenchimentoService {
                     .item(item)
                     .usuario(usuario)
                     .estruturaAdm(comboDestino.getEstruturaAdm())
-                    .competencia(comboDestino.getCompetencia())
+                    .competencia(competencia)
                     .valor(dto.valor())
                     .observacao(dto.observacao())
                     .dataPreenchimento(new Date())
@@ -60,42 +68,49 @@ public class PreenchimentoService {
         }
     }
 
-    /**
-     * Atualiza preenchimentos já existentes de um combo destino.
-     */
+
+    // ============================================================
+    // 🟦 MÉTODO 2 — ATUALIZAR PREENCHIMENTO EXISTENTE
+    // ============================================================
     @Transactional
     public void atualizarPreenchimentos(Long comboDestinoId, List<PreenchimentoCreateDTO> preenchimentosDTO) {
-        ComboDestino comboDestino = comboDestinoRepository.findById(comboDestinoId).orElse(null);
-        if (comboDestino == null) return;
 
-        // ✅ Recupera o usuário autenticado
+        ComboDestino comboDestino = comboDestinoRepository.findById(comboDestinoId)
+                .orElseThrow(() -> new RuntimeException("ComboDestino não encontrado."));
+
+        // Agora pega a competência: comboDestino → combo → competencia
+        Competencia competencia = comboDestino.getCombo().getCompetencia();
+        validarCompetenciaAberta(competencia);
+
+        // usuário logado
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Usuario usuario = userRepository.findUsuarioByEmail(email).orElse(null);
-        if (usuario == null) return;
+        Usuario usuario = userRepository.findUsuarioByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
         for (PreenchimentoCreateDTO dto : preenchimentosDTO) {
+
             Item item = itemRepository.findById(dto.itemId()).orElse(null);
             if (item == null) continue;
 
             Preenchimento existente = preenchimentoRepository
                     .findByEstruturaAdmAndCompetenciaAndItem(
                             comboDestino.getEstruturaAdm(),
-                            comboDestino.getCompetencia(),
+                            competencia,
                             item
-                    )
-                    .orElse(null);
+                    ).orElse(null);
 
             if (existente != null) {
                 existente.setValor(dto.valor());
                 existente.setObservacao(dto.observacao());
                 existente.setDataPreenchimento(new Date());
                 preenchimentoRepository.save(existente);
+
             } else {
                 Preenchimento novo = Preenchimento.builder()
                         .item(item)
                         .usuario(usuario)
                         .estruturaAdm(comboDestino.getEstruturaAdm())
-                        .competencia(comboDestino.getCompetencia())
+                        .competencia(competencia)
                         .valor(dto.valor())
                         .observacao(dto.observacao())
                         .dataPreenchimento(new Date())
@@ -106,17 +121,24 @@ public class PreenchimentoService {
         }
     }
 
+
+    // ============================================================
+    // 🟦 MÉTODO 3 — BUSCAR PREENCHIMENTOS DO COMBO DESTINO
+    // ============================================================
     public List<PreenchimentoResponseDTO> buscarPorComboDestino(Long comboDestinoId, String email) {
+
         ComboDestino comboDestino = comboDestinoRepository.findById(comboDestinoId)
                 .orElseThrow(() -> new RuntimeException("ComboDestino não encontrado"));
 
         Usuario usuario = userRepository.findUsuarioByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
+        Competencia competencia = comboDestino.getCombo().getCompetencia();
+
         List<Preenchimento> preenchimentos = preenchimentoRepository
                 .findByEstruturaAdmAndCompetenciaAndUsuario(
                         comboDestino.getEstruturaAdm(),
-                        comboDestino.getCompetencia(),
+                        competencia,
                         usuario
                 );
 
@@ -125,8 +147,22 @@ public class PreenchimentoService {
                         p.getItem().getId(),
                         p.getValor(),
                         p.getObservacao()
-                ))
-                .toList();
+                )).toList();
     }
 
+
+    // ============================================================
+    // 🔒 MÉTODO INTERNO — VALIDAR SE COMPETÊNCIA ESTÁ ABERTA
+    // ============================================================
+    private void validarCompetenciaAberta(Competencia competencia) {
+
+        LocalDateTime agora = LocalDateTime.now();
+
+        boolean dentroPeriodo =
+                !agora.isBefore(competencia.getDataInicio()) &&
+                        !agora.isAfter(competencia.getDataFim());
+
+        if (!dentroPeriodo)
+            throw new RuntimeException("O período da competência está encerrado.");
+    }
 }

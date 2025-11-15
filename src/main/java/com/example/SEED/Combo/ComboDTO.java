@@ -7,7 +7,8 @@ public record ComboDTO(
         String nomeCombo,
         String descricao,
         boolean ativo,
-        Date dataCriacao
+        Date dataCriacao,
+        Long competenciaId
 
 ) {
 }

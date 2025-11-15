@@ -33,9 +33,6 @@ public class ComboDestino {
     @JoinColumn(name = "id_setor")
     private Setor setor; // opcional
 
-    @ManyToOne
-    @JoinColumn(name = "id_competencia")
-    private Competencia competencia;
 
     @Column(name = "data_envio")
     private LocalDateTime dataEnvio;

@@ -7,4 +7,3 @@ public record ComboDestinoDTO(
         Long setorId,
         Boolean enviado
 ) {}
-
