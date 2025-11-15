@@ -25,14 +25,14 @@ public class CompetenciaService {
     }
 
     // Criar nova competência
-    public Competencia criar(CompetenciaDTO dto) {
+    public Competencia criar(CompetenciaCreateDTO dto) {
         Competencia c = Competencia.builder()
                 .nome(dto.getNome())
                 .ano(dto.getAno())
                 .mes(dto.getMes())
                 .dataInicio(dto.getDataInicio())
                 .dataFim(dto.getDataFim())
-                .competenciaStatus(CompetenciaStatus.ABERTO)
+                .competenciaStatus(CompetenciaStatus.ABERTO) // sempre ABERTO ao criar
                 .build();
         return repository.save(c);
     }

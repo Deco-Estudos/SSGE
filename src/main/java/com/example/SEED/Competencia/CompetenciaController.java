@@ -25,7 +25,7 @@ public class CompetenciaController {
     }
 
     @PostMapping
-    public Competencia criar(@RequestBody CompetenciaDTO dto) {
+    public Competencia criar(@RequestBody CompetenciaCreateDTO dto) {
         return service.criar(dto);
     }
 

@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -141,6 +142,9 @@ public class PreenchimentoService {
                         competencia,
                         usuario
                 );
+        System.out.println(">>>> dataInicio = " + competencia.getDataInicio());
+        System.out.println(">>>> dataFim = " + competencia.getDataFim());
+        System.out.println(">>>> agora = " + LocalDateTime.now());
 
         return preenchimentos.stream()
                 .map(p -> new PreenchimentoResponseDTO(
@@ -148,6 +152,7 @@ public class PreenchimentoService {
                         p.getValor(),
                         p.getObservacao()
                 )).toList();
+
     }
 
 
@@ -156,11 +161,11 @@ public class PreenchimentoService {
     // ============================================================
     private void validarCompetenciaAberta(Competencia competencia) {
 
-        LocalDateTime agora = LocalDateTime.now();
+        LocalDate hoje = LocalDate.now();
 
         boolean dentroPeriodo =
-                !agora.isBefore(competencia.getDataInicio()) &&
-                        !agora.isAfter(competencia.getDataFim());
+                !hoje.isBefore(competencia.getDataInicio().toLocalDate()) &&
+                        !hoje.isAfter(competencia.getDataFim().toLocalDate());
 
         if (!dentroPeriodo)
             throw new RuntimeException("O período da competência está encerrado.");
