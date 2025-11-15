@@ -14,4 +14,6 @@ public interface ComboDestinoRepository extends JpaRepository<ComboDestino, Long
     List<ComboDestino> findByCombo(Combo combo);
     List<ComboDestino> findBySetorIn(Set<Setor> setores);
     List<ComboDestino> findBySetorIdInAndAtivoTrue(List<Long> setoresId);
+    List<ComboDestino> findBySetorIdAndAtivoTrue(Long setorId);
+
 }

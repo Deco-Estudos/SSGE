@@ -66,6 +66,26 @@ public class ComboDestinoUsuarioService {
 
     }
 
+    public List<ComboDestinoUsuarioDTO> listarCombosPorSetor(Long setorId) {
+
+        List<ComboDestino> combos = comboDestinoRepository.findBySetorIdAndAtivoTrue(setorId);
+
+        return combos.stream()
+                .map(cd -> new ComboDestinoUsuarioDTO(
+                        cd.getId(),
+                        cd.getCombo() != null ? cd.getCombo().getId() : null,
+                        cd.getCombo() != null ? cd.getCombo().getNomeCombo() : null,
+                        cd.getSetor() != null ? cd.getSetor().getId() : null,
+                        cd.getSetor() != null ? cd.getSetor().getNome() : null,
+                        cd.getDataEnvio(),
+                        cd.getCombo() != null && cd.getCombo().getCompetencia() != null
+                                ? cd.getCombo().getCompetencia().getDataFim().toLocalDate()
+                                : null
+                ))
+                .toList();
+    }
+
+
 
     public List<ItemDTO> listarItensDoCombo(Long comboId) {
         Combo combo = comboRepository.findById(comboId)
