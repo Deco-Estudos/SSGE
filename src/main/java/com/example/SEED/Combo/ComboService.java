@@ -1,5 +1,7 @@
 package com.example.SEED.Combo;
 
+import com.example.SEED.Competencia.Competencia;
+import com.example.SEED.Competencia.CompetenciaRepository;
 import com.example.SEED.ComboDestino.ComboDestino;
 import com.example.SEED.ComboDestino.ComboDestinoRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,14 +22,18 @@ public class ComboService {
     @Autowired
     private ComboDestinoRepository comboDestinoRepository;
 
-    // Metodo para converter Entidade para DTO
+    @Autowired
+    private CompetenciaRepository competenciaRepository;
+
+    // Converter entidade para DTO
     private ComboDTO toDTO(Combo combo) {
         return new ComboDTO(
                 combo.getId(),
                 combo.getNomeCombo(),
                 combo.getDescricao(),
                 combo.isAtivo(),
-                combo.getDataCriacao()
+                combo.getDataCriacao(),
+                combo.getCompetencia() != null ? combo.getCompetencia().getId() : null
         );
     }
 
@@ -50,8 +56,13 @@ public class ComboService {
         Combo combo = new Combo();
         combo.setNomeCombo(comboDTO.nomeCombo());
         combo.setDescricao(comboDTO.descricao());
-        combo.setDataCriacao(new Date()); // Define a data de criação no momento do salvamento
-        combo.setAtivo(true); // Por padrão, um novo combo é criado como ativo
+        combo.setDataCriacao(new Date());
+        combo.setAtivo(true);
+
+        // Buscar e associar a competência
+        Competencia competencia = competenciaRepository.findById(comboDTO.competenciaId())
+                .orElseThrow(() -> new EntityNotFoundException("Competência não encontrada com o ID: " + comboDTO.competenciaId()));
+        combo.setCompetencia(competencia);
 
         Combo savedCombo = comboRepository.save(combo);
         return toDTO(savedCombo);
@@ -66,6 +77,13 @@ public class ComboService {
         combo.setDescricao(comboDTO.descricao());
         combo.setAtivo(comboDTO.ativo());
 
+        // Atualizar a competência, se fornecida
+        if (comboDTO.competenciaId() != null) {
+            Competencia competencia = competenciaRepository.findById(comboDTO.competenciaId())
+                    .orElseThrow(() -> new EntityNotFoundException("Competência não encontrada com o ID: " + comboDTO.competenciaId()));
+            combo.setCompetencia(competencia);
+        }
+
         Combo updatedCombo = comboRepository.save(combo);
         return toDTO(updatedCombo);
     }
@@ -75,13 +93,13 @@ public class ComboService {
         Combo combo = comboRepository.findById(comboId)
                 .orElseThrow(() -> new EntityNotFoundException("Combo não encontrado"));
 
-        // Deleta todos os destinos associados
+        // Deleta destinos associados
         List<ComboDestino> destinos = comboDestinoRepository.findByCombo(combo);
         if (!destinos.isEmpty()) {
             comboDestinoRepository.deleteAll(destinos);
         }
 
-        // Agora deleta o combo
+        // Deleta o combo
         comboRepository.delete(combo);
     }
 }

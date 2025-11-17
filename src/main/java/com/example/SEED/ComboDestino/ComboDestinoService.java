@@ -30,9 +30,6 @@ import java.util.List;
 public class ComboDestinoService {
 
     @Autowired
-    CompetenciaRepository competenciaRepository;
-
-    @Autowired
     private ComboRepository comboRepository;
 
     @Autowired
@@ -44,12 +41,8 @@ public class ComboDestinoService {
     @Autowired
     private ComboDestinoRepository destinoRepository;
 
-    @Autowired
-    private SetorService setorService;
-
     @Transactional
-    public void enviarComboParaEstrutura(Long comboId, Long estruturaId, List<Long> setoresId,
-                                         LocalDate dataInicio, LocalDate dataFim) {
+    public void enviarComboParaEstrutura(Long comboId, Long estruturaId, List<Long> setoresId) {
 
         Combo combo = comboRepository.findById(comboId)
                 .orElseThrow(() -> new EntityNotFoundException("Combo não encontrado: " + comboId));
@@ -57,21 +50,8 @@ public class ComboDestinoService {
         EstruturaAdm estrutura = estruturaRepository.findById(estruturaId)
                 .orElseThrow(() -> new EntityNotFoundException("Estrutura não encontrada: " + estruturaId));
 
-        // Converte LocalDate para LocalDateTime (inicio do dia)
-        LocalDateTime dataInicioTime = dataInicio.atStartOfDay();
-        LocalDateTime dataFimTime = dataFim.atStartOfDay();
-
-        Competencia competencia = Competencia.builder()
-                .ano(dataInicio.getYear())
-                .mes(dataInicio.getMonth().name()) // ou formata como quiser
-                .dataInicio(dataInicioTime)
-                .dataFim(dataFimTime)
-                .competenciaStatus(CompetenciaStatus.ABERTO)
-                .build();
-
-        competenciaRepository.save(competencia);
-
         for (Long setorId : setoresId) {
+
             Setor setor = setorRepository.findById(setorId)
                     .orElseThrow(() -> new EntityNotFoundException("Setor não encontrado: " + setorId));
 
@@ -79,13 +59,14 @@ public class ComboDestinoService {
                     .combo(combo)
                     .estruturaAdm(estrutura)
                     .setor(setor)
-                    .competencia(competencia)
                     .ativo(true)
-                    .dataEnvio(LocalDateTime.now()) // data/hora atual
+                    .dataEnvio(LocalDateTime.now())
                     .build();
 
             destinoRepository.saveAndFlush(destino);
-            System.out.println("Salvo destino -> Estrutura: " + estrutura.getId() + ", Setor: " + setor.getId());
+
+            System.out.println("Salvo destino → Estrutura: " + estrutura.getId() +
+                    ", Setor: " + setor.getId());
         }
     }
 }

@@ -1,10 +1,12 @@
 package com.example.SEED.ComboDestino;
 
+import java.time.LocalDate;
+
 public record ComboDestinoDTO(
         Long id,
-        Long comboId,
-        Long estruturaId,
-        Long setorId,
-        Boolean enviado
+        String nomeCombo,
+        String nomeSetor,
+        LocalDate dataEnvio,
+        LocalDate competenciaDataFim // <-- pega a dataFim da competência
 ) {}
 

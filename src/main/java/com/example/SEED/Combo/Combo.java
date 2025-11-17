@@ -2,6 +2,7 @@ package com.example.SEED.Combo;
 
 
 import com.example.SEED.ComboDestino.ComboDestino;
+import com.example.SEED.Competencia.Competencia;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,6 +33,11 @@ public class Combo {
 
     @Column(name = "data_criacao", nullable = false)
     private Date dataCriacao;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_competencia", nullable = false)
+    private Competencia competencia;
+
 
     @OneToMany(mappedBy = "combo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ComboDestino> destinos;
