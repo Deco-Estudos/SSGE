@@ -5,14 +5,15 @@ import com.example.SEED.Item.Item;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Setter
-@Getter
 @Entity
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "combo_item")
 public class ComboItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_combo_item")
@@ -26,11 +27,10 @@ public class ComboItem {
     @JoinColumn(name = "id_item", nullable = false)
     private Item item;
 
-
     @Column(nullable = false)
     private String ordem;
 
-    private Integer Valor;
-
     private Boolean obrigatorio;
+
+
 }

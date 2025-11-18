@@ -27,12 +27,10 @@ public class ComboItemService {
     @Autowired
     private ItemRepository itemRepository;
 
-
     private ComboItemResponseDTO toResponseDTO(ComboItem comboItem) {
         Item item = comboItem.getItem();
         Classificacao classificacao = item.getClassificacao();
         ClassificacaoDTO classificacaoDTO = null;
-
 
         if (classificacao != null) {
             classificacaoDTO = new ClassificacaoDTO(
@@ -56,37 +54,33 @@ public class ComboItemService {
                 comboItem.getId(),
                 comboItem.getOrdem(),
                 comboItem.getObrigatorio(),
-                comboItem.getValor(), // 1. CAMPO 'VALOR' INCLUÍDO
-                itemDTO
+                itemDTO // 'valor' foi REMOVIDO
         );
     }
 
     @Transactional
     public ComboItemResponseDTO addItemToCombo(Long comboId, AddComboItemRequestDTO requestDTO) {
 
-
+        // Validação da Ordem (>= 1, numérico)
         int ordemNum;
         try {
             ordemNum = Integer.parseInt(requestDTO.ordem());
             if (ordemNum < 1) {
-                // Esta linha impede números negativos ou zero
                 throw new IllegalArgumentException("A ordem deve ser um número maior ou igual a 1.");
             }
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("A ordem deve ser um valor numérico (Ex: '1', '2', etc.).");
         }
 
-        // 2.1 Validação de ordem repetida
+        // Validação de Ordem repetida
         if (comboItemRepository.existsByComboIdAndOrdem(comboId, requestDTO.ordem())) {
             throw new IllegalStateException("A ordem '" + requestDTO.ordem() + "' já está em uso neste kit.");
         }
 
-
-        // 3. Validar se o item já não está no combo
+        // Validação de Item repetido
         if (comboItemRepository.existsByComboIdAndItemId(comboId, requestDTO.itemId())) {
             throw new IllegalStateException("Este item já foi adicionado a este combo.");
         }
-
 
         Combo combo = comboRepository.findById(comboId)
                 .orElseThrow(() -> new EntityNotFoundException("Combo não encontrado com o ID: " + comboId));
@@ -94,17 +88,14 @@ public class ComboItemService {
         Item item = itemRepository.findById(requestDTO.itemId())
                 .orElseThrow(() -> new EntityNotFoundException("Item não encontrado com o ID: " + requestDTO.itemId()));
 
-
         ComboItem newComboItem = new ComboItem();
         newComboItem.setCombo(combo);
         newComboItem.setItem(item);
         newComboItem.setOrdem(requestDTO.ordem());
         newComboItem.setObrigatorio(requestDTO.obrigatorio());
-        newComboItem.setValor(requestDTO.valor());
-
+        // 'setValor()' foi REMOVIDO daqui
 
         ComboItem savedComboItem = comboItemRepository.save(newComboItem);
-
 
         return toResponseDTO(savedComboItem);
     }

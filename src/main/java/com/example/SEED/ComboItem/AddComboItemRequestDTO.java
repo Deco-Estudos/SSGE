@@ -1,6 +1,5 @@
 package com.example.SEED.ComboItem;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -12,9 +11,7 @@ public record AddComboItemRequestDTO(
         String ordem,
 
         @NotNull(message = "O campo 'obrigatório' é obrigatório.")
-        Boolean obrigatorio,
+        Boolean obrigatorio
 
 
-        @Min(value = 0, message = "O valor não pode ser negativo.")
-        Integer valor
 ) {}
