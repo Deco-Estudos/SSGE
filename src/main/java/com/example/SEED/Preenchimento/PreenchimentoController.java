@@ -2,6 +2,7 @@ package com.example.SEED.Preenchimento;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated; // Importante
 import jakarta.validation.Valid; // Importante
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,12 @@ public class PreenchimentoController {
             @PathVariable Long comboDestinoId
     ) {
 
-        return null;
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        List<PreenchimentoResponseDTO> preenchimentos =
+                preenchimentoService.buscarPorComboDestino(comboDestinoId, email);
+
+        return ResponseEntity.ok(preenchimentos);
     }
 
     // 🔹 Salvar novos preenchimentos

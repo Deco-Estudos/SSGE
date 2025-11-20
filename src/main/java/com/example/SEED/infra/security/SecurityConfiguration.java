@@ -54,6 +54,7 @@ public class SecurityConfiguration {
 
                         .requestMatchers("/responsavel-setor/**").hasAuthority("ROLE_RESPONSAVEL_SETOR")
                         .requestMatchers("/adm/**").hasAuthority("ROLE_ADM") //Isso limita as funcionalidades de adm só para adm
+                        .requestMatchers("/api/**").authenticated() // <--- ESSENCIAL PARA O DIRETOR
 
                         .anyRequest().authenticated()
                 )

@@ -1,5 +1,6 @@
 package com.example.SEED.ADM;
 
+import com.example.SEED.Usuario.UsuarioResponseDTO;
 import com.example.SEED.dto.AuthencicationDTO;
 import com.example.SEED.dto.LoginResponseDTO;
 import com.example.SEED.dto.RegisterDTO;
@@ -74,9 +75,9 @@ public class AuthenticationController {
         Perfil perfil = perfilRepository.findByNomePerfil(data.nomePerfil())
                 .orElseThrow(() -> new RuntimeException("Perfil não encontrado"));
 
-       // if(perfil.getNomePerfil() == NomePerfil.ADM){
-         //   return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Não é possível solicitar perfil ADM via registro");
-        //}
+       if(perfil.getNomePerfil() == NomePerfil.ADM){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Não é possível solicitar perfil ADM via registro");
+        }
 
         Usuario novoUsuario = new Usuario(data.nome(), data.email(), encryptedPassword, data.cpf(), data.telefone(), perfil); // falta colocar role
         novoUsuario.setAtivo(false);
@@ -88,4 +89,33 @@ public class AuthenticationController {
 
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<?> getUsuarioLogado(@RequestHeader("Authorization") String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Token ausente ou inválido");
+        }
+
+        String token = authHeader.replace("Bearer ", "");
+        String email = tokenService.validateToken(token); // pega o subject (email)
+
+        if (email == null) {
+            return ResponseEntity.status(401).body("Token inválido");
+        }
+
+        Usuario usuario = userRepository.findUsuarioByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        return ResponseEntity.ok(new UsuarioResponseDTO(
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail(),
+                usuario.getPerfil().getNomePerfil().toString()
+        ));
+    }
+
+
 }
+
+
+

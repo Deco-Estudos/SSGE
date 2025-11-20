@@ -45,4 +45,6 @@ public class AdmController {
         String mensagem = admService.reprovarUser(id);
         return ResponseEntity.ok(mensagem);
     }
+
+    
 }
