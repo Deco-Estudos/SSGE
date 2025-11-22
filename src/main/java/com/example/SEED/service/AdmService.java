@@ -1,6 +1,8 @@
 package com.example.SEED.service;
 
 import com.example.SEED.ADM.AtualizarUsuarioDTO;
+import com.example.SEED.EstruturaAdm.EstruturaAdm; // Importar
+import com.example.SEED.EstruturaAdm.EstruturaAdmRepository; // Importar
 import com.example.SEED.Perfil.Perfil;
 import com.example.SEED.repository.PerfilRepository;
 import com.example.SEED.Setor.Setor;
@@ -22,45 +24,22 @@ import java.util.stream.Collectors;
 @Service
 public class AdmService {
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    private PerfilRepository perfilRepository;
-
-    @Autowired
-    private SetorRepository setorRepository;
+    @Autowired UserRepository userRepository;
+    @Autowired private PerfilRepository perfilRepository;
+    @Autowired private SetorRepository setorRepository;
+    @Autowired private EstruturaAdmRepository estruturaRepository; // Nova Injeção
 
     public List<UsuarioDTO> listarUsers(){
         List<Usuario> usuariosPendentes = userRepository.findByAtivoFalse();
-        List<UsuarioDTO> dtos = usuariosPendentes.stream()
-                .map(u -> new UsuarioDTO(
-                        u.getId(),
-                        u.getNome(),
-                        u.getEmail(),
-                        u.getCpf(),
-                        u.getTelefone(),
-                        u.getPerfil() != null ? u.getPerfil().getNomePerfil() : null,
-                        u.getDataCadastro(),
-                        u.isAtivo()
-                ))
+        return usuariosPendentes.stream()
+                .map(this::toDTO)
                 .collect(Collectors.toList());
-        return dtos;
     }
 
     @Transactional(readOnly = true)
     public List<UsuarioDTO> listarTodosUsuarios() {
         return userRepository.findAll().stream()
-                .map(u -> new UsuarioDTO(
-                        u.getId(),
-                        u.getNome(),
-                        u.getEmail(),
-                        u.getCpf(),
-                        u.getTelefone(),
-                        u.getPerfil() != null ? u.getPerfil().getNomePerfil() : null,
-                        u.getDataCadastro(),
-                        u.isAtivo()
-                ))
+                .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -69,46 +48,50 @@ public class AdmService {
         Usuario usuario = userRepository.findById(usuarioId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + usuarioId));
 
+        // 1. Atualiza Perfil
         if (dto.perfilId() != null) {
             Perfil novoPerfil = perfilRepository.findById(dto.perfilId())
                     .orElseThrow(() -> new EntityNotFoundException("Perfil não encontrado com ID: " + dto.perfilId()));
             usuario.setPerfil(novoPerfil);
         }
 
+        // 2. Atualiza Setores (Para Responsável de Setor)
         if (dto.setorIds() != null) {
             Set<Setor> novosSetores = new HashSet<>(setorRepository.findAllById(dto.setorIds()));
-
-            if (novosSetores.size() != dto.setorIds().size()) {
-                throw new EntityNotFoundException("Um ou mais Setores não foram encontrados.");
-            }
             usuario.setSetores(novosSetores);
+        }
+
+        // 3. Atualiza Estruturas (Para Diretor) -- NOVO BLOCO
+        if (dto.estruturaIds() != null) {
+            Set<EstruturaAdm> novasEstruturas = new HashSet<>(estruturaRepository.findAllById(dto.estruturaIds()));
+            usuario.setEstruturasAdministradas(novasEstruturas);
         }
 
         userRepository.save(usuario);
     }
 
+    // ... métodos aprovar/reprovar ...
     public String aprovarUser(Long id){
         Optional<Usuario> usuario = userRepository.findById(id);
-        if(usuario.isEmpty()){
-            throw new RuntimeException("Usuário não encontrado");
-        }
-        Usuario usuarioEncontrado = usuario.get();
-
-        usuarioEncontrado.setAtivo(true);
-        userRepository.save(usuarioEncontrado);
-
-        return "Usuário aprovado com sucesso";
+        if(usuario.isEmpty()) throw new RuntimeException("Usuário não encontrado");
+        Usuario u = usuario.get();
+        u.setAtivo(true);
+        userRepository.save(u);
+        return "Usuário aprovado";
     }
 
     public String reprovarUser(Long id){
         Optional<Usuario> usuario = userRepository.findById(id);
-        if(usuario.isEmpty()){
-            throw new RuntimeException("Usuário não encontrado");
-        }
-        Usuario usuarioEncontrado = usuario.get();
+        if(usuario.isEmpty()) throw new RuntimeException("Usuário não encontrado");
+        userRepository.delete(usuario.get());
+        return "Usuário removido";
+    }
 
-        userRepository.delete(usuarioEncontrado);
-
-        return "Usuário removido com sucesso";
+    private UsuarioDTO toDTO(Usuario u) {
+        return new UsuarioDTO(
+                u.getId(), u.getNome(), u.getEmail(), u.getCpf(), u.getTelefone(),
+                u.getPerfil() != null ? u.getPerfil().getNomePerfil() : null,
+                u.getDataCadastro(), u.isAtivo()
+        );
     }
 }

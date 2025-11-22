@@ -1,9 +1,11 @@
 package com.example.SEED.EstruturaAdm;
 
 import com.example.SEED.Municipio.Municipio;
+import com.example.SEED.Usuario.Usuario; // Importar
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
+import java.util.Set; // Importar
 
 @Setter
 @Getter
@@ -13,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "estrutura_adm")
 public class EstruturaAdm {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_estrutura_adm")
@@ -23,7 +24,7 @@ public class EstruturaAdm {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipo", nullable = false)
+    @Column(nullable = false)
     private TipoEstrutura tipo;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,5 +42,7 @@ public class EstruturaAdm {
 
     @OneToMany(mappedBy = "estruturaAdm", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<com.example.SEED.Setor.Setor> setores;
-}
 
+    @ManyToMany(mappedBy = "estruturasAdministradas")
+    private Set<Usuario> diretores;
+}

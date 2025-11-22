@@ -6,22 +6,26 @@ import com.example.SEED.Usuario.Usuario;
 import com.example.SEED.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class EstruturaAdmService {
 
     @Autowired
-    EstruturaAdmRepository estruturaAdmRepository;
+    private EstruturaAdmRepository estruturaAdmRepository;
 
     @Autowired
-    MunicipioRepository municipioRepository;
+    private MunicipioRepository municipioRepository;
 
     @Autowired
-    private UserRepository userRepository; // Nova Injeção
+    private UserRepository userRepository;
 
+    @Transactional
     public EstruturaAdmDTO criarEstrutura(EstruturaAdmDTO data) {
         Municipio municipio = municipioRepository.findById(data.municipio().id())
                 .orElseThrow(() -> new RuntimeException("Município não encontrado"));
@@ -45,6 +49,7 @@ public class EstruturaAdmService {
         return toDTO(saved);
     }
 
+    @Transactional
     public EstruturaAdmDTO atualizarEstrutura(Long id, EstruturaAdmDTO data) {
         EstruturaAdm existing = estruturaAdmRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Estrutura não encontrada"));
@@ -71,42 +76,59 @@ public class EstruturaAdmService {
         return toDTO(updated);
     }
 
+    @Transactional
     public void deletarEstrutura(Long id) {
         EstruturaAdm existing = estruturaAdmRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Estrutura não encontrada"));
         estruturaAdmRepository.delete(existing);
     }
 
+    @Transactional(readOnly = true)
     public List<EstruturaAdmDTO> listarEstruturas() {
         return estruturaAdmRepository.findAll().stream()
                 .map(this::toDTO)
-                .toList();
+                .collect(Collectors.toList());
     }
 
-
+    @Transactional(readOnly = true)
     public List<EstruturaAdmDTO> listarEstruturasAtivas() {
         return estruturaAdmRepository.findByAtivoTrue().stream()
                 .map(this::toDTO)
-                .toList();
+                .collect(Collectors.toList());
     }
 
 
+    @Transactional(readOnly = true)
     public List<EstruturaAdmDTO> listarEstruturasDoUsuario(String email) {
         Usuario usuario = userRepository.findUsuarioByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
 
-        return usuario.getSetores().stream()
-                .map(setor -> setor.getEstruturaAdm())
-                .distinct() // Remove duplicatas
+        Set<EstruturaAdm> estruturasUnicas = new HashSet<>();
+
+        // 1. Adiciona escolas onde o usuário é responsável por algum SETOR
+        if (usuario.getSetores() != null) {
+            usuario.getSetores().forEach(setor ->
+                    estruturasUnicas.add(setor.getEstruturaAdm())
+            );
+        }
+
+        // 2. Adiciona escolas onde o usuário é DIRETOR direto
+        if (usuario.getEstruturasAdministradas() != null) {
+            estruturasUnicas.addAll(usuario.getEstruturasAdministradas());
+        }
+
+        // Converte para DTO e retorna como Lista
+        return estruturasUnicas.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<EstruturaAdmDTO> listarPorTipo(TipoEstrutura tipo) {
         return estruturaAdmRepository.findByTipo(tipo).stream()
                 .map(this::toDTO)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     private EstruturaAdmDTO toDTO(EstruturaAdm e) {

@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,19 +19,25 @@ public class EstruturaUsuarioController {
     private EstruturaAdmService estruturaAdmService;
 
     @GetMapping
-    public ResponseEntity<List<EstruturaAdmDTO>> listarEstruturas() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        // Obtém a role do usuário logado
-        String role = auth.getAuthorities().iterator().next().getAuthority();
-        String email = auth.getName();
-
-        // 1. Se for ADM ou RH, vê TODAS as ativas
-        if (role.equals("ADM") || role.equals("ROLE_ADM") ||
-                role.equals("RH") || role.equals("ROLE_RH")) {
+    public ResponseEntity<List<EstruturaAdmDTO>> listarEstruturas(
+            @RequestParam(required = false, defaultValue = "false") boolean todas
+    ) {
+        // Se o front-end pedir ?todas=true, retorna a lista geral de ativas (Para Solicitação)
+        if (todas) {
             return ResponseEntity.ok(estruturaAdmService.listarEstruturasAtivas());
         }
 
-        // 2. Se for outro perfil (Diretor/Responsável), vê só as SUAS
+        // Lógica Padrão (Para Dashboard e Preenchimento)
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().iterator().next().getAuthority();
+        String email = auth.getName();
+
+        // ADM/RH sempre veem tudo
+        if (role.equals("ADM") || role.equals("ROLE_ADM") || role.equals("RH") || role.equals("ROLE_RH")) {
+            return ResponseEntity.ok(estruturaAdmService.listarEstruturasAtivas());
+        }
+
+        // Outros veem apenas as suas, a menos que tenham pedido "todas" (que caiu no if lá de cima)
         return ResponseEntity.ok(estruturaAdmService.listarEstruturasDoUsuario(email));
     }
 }

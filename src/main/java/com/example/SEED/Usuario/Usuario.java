@@ -1,17 +1,18 @@
 package com.example.SEED.Usuario;
 
+import com.example.SEED.EstruturaAdm.EstruturaAdm; // 1. IMPORTAR
 import com.example.SEED.Perfil.Perfil;
-import com.example.SEED.Setor.Setor; // 1. IMPORTADO
+import com.example.SEED.Setor.Setor;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Set; // 2. IMPORTADO
+import java.util.Set;
 
 @Getter
 @Setter
@@ -62,42 +63,37 @@ public class Usuario implements UserDetails {
     private Set<Setor> setores;
 
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "usuario_estrutura",
+            joinColumns = @JoinColumn(name = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "id_estrutura_adm")
+    )
+    private Set<EstruturaAdm> estruturasAdministradas;
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
         return List.of(new SimpleGrantedAuthority(perfil.getAuthorityName()));
     }
 
     @Override
-    public String getPassword() {
-        return this.senha;
-    }
+    public String getPassword() { return this.senha; }
 
     @Override
-    public String getUsername() {
-        return this.email;
-    }
+    public String getUsername() { return this.email; }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return true; }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() {
-        return this.ativo;
-    }
-
+    public boolean isEnabled() { return this.ativo; }
 
     public Usuario(String nome, String email, String senha, String cpf, String telefone, Perfil perfil) {
         this.nome = nome;
