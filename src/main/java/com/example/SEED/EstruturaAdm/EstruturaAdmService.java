@@ -2,9 +2,13 @@ package com.example.SEED.EstruturaAdm;
 
 import com.example.SEED.Municipio.Municipio;
 import com.example.SEED.Municipio.MunicipioRepository;
+import com.example.SEED.Usuario.Usuario;
+import com.example.SEED.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EstruturaAdmService {
@@ -14,6 +18,9 @@ public class EstruturaAdmService {
 
     @Autowired
     MunicipioRepository municipioRepository;
+
+    @Autowired
+    private UserRepository userRepository; // Nova Injeção
 
     public EstruturaAdmDTO criarEstrutura(EstruturaAdmDTO data) {
         Municipio municipio = municipioRepository.findById(data.municipio().id())
@@ -83,6 +90,18 @@ public class EstruturaAdmService {
                 .toList();
     }
 
+
+    public List<EstruturaAdmDTO> listarEstruturasDoUsuario(String email) {
+        Usuario usuario = userRepository.findUsuarioByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+
+        return usuario.getSetores().stream()
+                .map(setor -> setor.getEstruturaAdm())
+                .distinct() // Remove duplicatas
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
 
     public List<EstruturaAdmDTO> listarPorTipo(TipoEstrutura tipo) {
         return estruturaAdmRepository.findByTipo(tipo).stream()

@@ -17,7 +17,6 @@ import java.util.Optional;
 @Repository
 public interface PreenchimentoRepository extends JpaRepository<Preenchimento, Long> {
 
-    // --- MÉTODOS DE LÓGICA DE PREENCHIMENTO (Seu Colega) ---
     Optional<Preenchimento> findByEstruturaAdmAndCompetenciaAndItem(
             EstruturaAdm estruturaAdm,
             Competencia competencia,
@@ -30,8 +29,6 @@ public interface PreenchimentoRepository extends JpaRepository<Preenchimento, Lo
             Usuario usuario
     );
 
-    // --- MÉTODOS DO MURAL (Seu Colega) ---
-    // O erro estava aqui: estes métodos tinham sumido!
     List<Preenchimento> findByCompetenciaIdOrderByDataPreenchimentoDesc(Long id);
 
     List<Preenchimento> findByCompetenciaIdAndUsuarioPerfilNomePerfilOrderByDataPreenchimentoDesc(
@@ -39,7 +36,6 @@ public interface PreenchimentoRepository extends JpaRepository<Preenchimento, Lo
             NomePerfil nomePerfil
     );
 
-    // --- QUERIES DO DASHBOARD (Nós) ---
 
     // SOMA DE MATERIAIS (Tudo que NÃO é RH)
     @Query("""
