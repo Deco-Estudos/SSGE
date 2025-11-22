@@ -28,7 +28,7 @@ public class ComboController {
     @Autowired
     private ComboService comboService;
 
-    // --- INJEÇÃO DO NOVO SERVICE ---
+
     @Autowired
     private ComboItemService comboItemService;
 
@@ -114,6 +114,15 @@ public class ComboController {
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PatchMapping("/itens/{comboItemId}/ordem")
+    public ResponseEntity<Void> atualizarOrdemItem(
+            @PathVariable Long comboItemId,
+            @RequestBody String novaOrdem
+    ) {
+        comboItemService.atualizarOrdem(comboItemId, novaOrdem);
+        return ResponseEntity.ok().build();
     }
 
 }
