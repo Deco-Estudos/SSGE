@@ -1,2 +1,7 @@
-package com.example.SEED.SolicitacaoComboItem;public enum StatusSolicitacao {
+package com.example.SEED.SolicitacaoComboItem;
+
+public enum StatusSolicitacao {
+    PENDENTE,
+    APROVADA,
+    REJEITADA
 }

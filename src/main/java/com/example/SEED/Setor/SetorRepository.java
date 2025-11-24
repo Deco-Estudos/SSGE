@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface SetorRepository extends JpaRepository<Setor,Long> {
     List<Setor> findByEstruturaAdmId(Long estruturaId);
     Optional<Setor> findById(Long id);
+    List<Setor> findByResponsaveisId(Long usuarioId);
 }

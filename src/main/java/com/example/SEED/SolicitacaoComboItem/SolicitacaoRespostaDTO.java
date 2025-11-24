@@ -1,2 +1,5 @@
-package com.example.SEED.SolicitacaoComboItem;public record SolicitacaoRespostaDTO() {
-}
+package com.example.SEED.SolicitacaoComboItem;
+
+public record SolicitacaoRespostaDTO(
+        String feedbackAdm
+) {}
