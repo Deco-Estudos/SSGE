@@ -21,5 +21,7 @@ public record MuralCompetenciaDTO(
 
         Integer quantidade,
         BigDecimal valor,
-        Date dataPreenchimento
+        Date dataPreenchimento,
+
+        String tipo
 ) {}

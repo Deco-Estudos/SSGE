@@ -8,11 +8,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface CensoRepository extends JpaRepository<Censo, Long> {
 
     Optional<Censo> findByEstruturaAdmAndCompetencia(EstruturaAdm estruturaAdm, Competencia competencia);
+
+    List<Censo> findByCompetenciaId(Long competenciaId);
 
 
     @Query("SELECT SUM(c.quantidadeAlunos) FROM Censo c WHERE (:estId IS NULL OR c.estruturaAdm.id = :estId) AND (:compId IS NULL OR c.competencia.id = :compId)")

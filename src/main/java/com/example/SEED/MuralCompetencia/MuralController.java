@@ -12,7 +12,7 @@ public class MuralController {
     private MuralCompetenciaService service;
 
     @GetMapping("/{competenciaId}")
-    public List<MuralCompetenciaDTO> getMural(
+    public List<Object> getMural(
             @PathVariable Long competenciaId,
             @RequestParam(required = false) String perfil
     ) {

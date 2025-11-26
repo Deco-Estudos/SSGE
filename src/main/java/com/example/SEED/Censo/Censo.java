@@ -2,8 +2,11 @@ package com.example.SEED.Censo;
 
 import com.example.SEED.Competencia.Competencia;
 import com.example.SEED.EstruturaAdm.EstruturaAdm;
+import com.example.SEED.Usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Date;
 
 @Entity
 @Getter
@@ -29,6 +32,13 @@ public class Censo {
     @JoinColumn(name = "id_competencia", nullable = false)
     private Competencia competencia;
 
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario;
+
     @Column(nullable = false)
     private Integer quantidadeAlunos;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataPreenchimento;
 }

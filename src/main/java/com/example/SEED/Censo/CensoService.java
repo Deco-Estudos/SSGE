@@ -4,10 +4,15 @@ import com.example.SEED.Competencia.Competencia;
 import com.example.SEED.Competencia.CompetenciaRepository;
 import com.example.SEED.EstruturaAdm.EstruturaAdm;
 import com.example.SEED.EstruturaAdm.EstruturaAdmRepository;
+import com.example.SEED.Usuario.Usuario;
+import com.example.SEED.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
 
 @Service
 public class CensoService {
@@ -19,8 +24,16 @@ public class CensoService {
     @Autowired
     private CompetenciaRepository competenciaRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Transactional
     public void salvarCenso(CensoDTO dto) {
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = userRepository.findUsuarioByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
         EstruturaAdm estrutura = estruturaRepository.findById(dto.estruturaId())
                 .orElseThrow(() -> new EntityNotFoundException("Estrutura não encontrada"));
 
@@ -35,6 +48,8 @@ public class CensoService {
         censo.setEstruturaAdm(estrutura);
         censo.setCompetencia(competencia);
         censo.setQuantidadeAlunos(dto.quantidadeAlunos());
+        censo.setUsuario(usuario);
+        censo.setDataPreenchimento(new Date());
 
         censoRepository.save(censo);
     }
