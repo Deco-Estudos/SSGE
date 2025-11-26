@@ -17,6 +17,7 @@ import java.util.Optional;
 @Repository
 public interface PreenchimentoRepository extends JpaRepository<Preenchimento, Long> {
 
+
     Optional<Preenchimento> findByEstruturaAdmAndCompetenciaAndItem(
             EstruturaAdm estruturaAdm,
             Competencia competencia,
@@ -29,6 +30,7 @@ public interface PreenchimentoRepository extends JpaRepository<Preenchimento, Lo
             Usuario usuario
     );
 
+
     List<Preenchimento> findByCompetenciaIdOrderByDataPreenchimentoDesc(Long id);
 
     List<Preenchimento> findByCompetenciaIdAndUsuarioPerfilNomePerfilOrderByDataPreenchimentoDesc(
@@ -37,9 +39,12 @@ public interface PreenchimentoRepository extends JpaRepository<Preenchimento, Lo
     );
 
 
-    // SOMA DE MATERIAIS (Tudo que NÃO é RH)
+
+
+
+    // 1. SOMA DE MATERIAIS (Tudo que NÃO é RH)
     @Query("""
-        SELECT SUM(p.valor * COALESCE(p.quantidade, 1)) 
+        SELECT SUM(p.valor) 
         FROM Preenchimento p 
         WHERE (:estId IS NULL OR p.estruturaAdm.id = :estId) 
           AND (:compId IS NULL OR p.competencia.id = :compId)
@@ -47,9 +52,9 @@ public interface PreenchimentoRepository extends JpaRepository<Preenchimento, Lo
     """)
     BigDecimal somarMateriais(@Param("estId") Long estruturaId, @Param("compId") Long competenciaId);
 
-    // SOMA DE PESSOAL (Apenas RH)
+    // 2. SOMA DE PESSOAL (Apenas RH)
     @Query("""
-        SELECT SUM(p.valor * COALESCE(p.quantidade, 1)) 
+        SELECT SUM(p.valor) 
         FROM Preenchimento p 
         WHERE (:estId IS NULL OR p.estruturaAdm.id = :estId) 
           AND (:compId IS NULL OR p.competencia.id = :compId)
