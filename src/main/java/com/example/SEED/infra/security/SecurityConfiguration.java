@@ -1,6 +1,7 @@
 package com.example.SEED.infra.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,12 +19,17 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
+
+    @Value("${cors.origins}")
+    private String corsOrigins;
+
     @Autowired
     SecurityFilter securityFilter;
 
@@ -32,6 +38,8 @@ public class SecurityConfiguration {
             "/swagger-ui/**",
             "/swagger-ui.html"
     };
+
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -59,10 +67,8 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
-        // --- AQUI ESTAVA O PROBLEMA: ADICIONADO "PATCH" ---
+        config.setAllowedOrigins(Arrays.asList(corsOrigins.split(",")));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        // --------------------------------------------------
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
         config.setAllowCredentials(true);
         config.setExposedHeaders(List.of("Authorization", "Content-Type"));
