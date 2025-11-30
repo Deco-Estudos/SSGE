@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -23,37 +24,34 @@ public class DashboardController {
     private EstruturaAdmService estruturaAdmService;
 
     @GetMapping
-    public ResponseEntity<?> getResumo(
+    public ResponseEntity<?> getDashboardAnual(
             @RequestParam(required = false) Long estruturaId,
-            @RequestParam(required = false) Long competenciaId
+            @RequestParam(required = false) Integer ano
     ) {
+        // Se não mandar ano, usa o atual
+        if (ano == null) ano = LocalDate.now().getYear();
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String role = auth.getAuthorities().iterator().next().getAuthority();
         String email = auth.getName();
 
-
-        if (role.equals("ADM") || role.equals("ROLE_ADM") || role.equals("RH") || role.equals("ROLE_RH")) {
-            return ResponseEntity.ok(dashboardService.calcularResumo(estruturaId, competenciaId));
+        // 1. ADM/RH vê tudo
+        if (role.contains("ADM") || role.contains("RH")) {
+            return ResponseEntity.ok(dashboardService.gerarDashboardAnual(estruturaId, ano));
         }
 
-
+        // 2. Diretor/Outros veem só o seu
         List<EstruturaAdmDTO> minhasEstruturas = estruturaAdmService.listarEstruturasDoUsuario(email);
-
         if (minhasEstruturas.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("Usuário não vinculado a nenhuma escola. Solicite acesso a um setor.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sem vínculo escolar.");
         }
 
+        Long meuId = minhasEstruturas.get(0).id();
 
-        Long minhaEstruturaId = minhasEstruturas.get(0).id();
-
-
-        if (estruturaId != null && !estruturaId.equals(minhaEstruturaId)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("Você não tem permissão para ver dados desta escola.");
+        if (estruturaId != null && !estruturaId.equals(meuId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado a esta escola.");
         }
 
-        // Retorna os dados forçando o ID da escola dele
-        return ResponseEntity.ok(dashboardService.calcularResumo(minhaEstruturaId, competenciaId));
+        return ResponseEntity.ok(dashboardService.gerarDashboardAnual(meuId, ano));
     }
 }
