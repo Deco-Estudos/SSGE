@@ -8,10 +8,10 @@ Com isso, é possível calcular e comparar o **gasto por aluno** de cada escola,
 
 ## 🚀 Funcionalidades
 
-- 👤 **Perfis de usuários**: Secretaria (ADM), Regionais, Departamentos e Escolas.  
+- 👤 **Perfis de usuários**: Secretaria (ADM), Diretor, Gestores e Escolas.  
 - 🏛️ **Hierarquia organizacional**: Secretaria → Órgãos intermediários → Escolas.  
 - 📦 **Combos de gastos**: criados pela Secretaria e atribuídos às escolas.  
-- 📝 **Preenchimento de gastos**: realizado por diferentes níveis da hierarquia, mas sempre associado a uma escola final.  
+- 📝 **Preenchimento de gastos**: realizado por diferentes níveis da hierarquia, mas sempre associado a uma escola e competência.  
 - 📊 **Cálculo de indicadores**: gasto total e gasto por aluno.  
 - 🔒 **Controle de acesso** com base no perfil do usuário.  
 - 🗂️ **Histórico de preenchimentos** para auditoria.  
@@ -34,6 +34,6 @@ Entidades principais:
 ## 🛠️ Tecnologias
 
 - **Backend:** Java 
-- **Banco de Dados:** MySQL
+- **Banco de Dados:** PostSQL
 - **Frontend:** React.js
 - **Containerização:** Docker
