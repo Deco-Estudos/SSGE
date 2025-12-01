@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -24,34 +23,39 @@ public class DashboardController {
     private EstruturaAdmService estruturaAdmService;
 
     @GetMapping
-    public ResponseEntity<?> getDashboardAnual(
+    public ResponseEntity<?> getResumo(
             @RequestParam(required = false) Long estruturaId,
-            @RequestParam(required = false) Integer ano
+            @RequestParam(required = false) Long competenciaId
     ) {
-        // Se não mandar ano, usa o atual
-        if (ano == null) ano = LocalDate.now().getYear();
-
+        // 1. Descobrir quem está logado
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String role = auth.getAuthorities().iterator().next().getAuthority();
         String email = auth.getName();
 
-        // 1. ADM/RH vê tudo
-        if (role.contains("ADM") || role.contains("RH")) {
-            return ResponseEntity.ok(dashboardService.gerarDashboardAnual(estruturaId, ano));
+        // 2. Se for ADM ou RH, tem "Visão de Deus" (pode ver tudo ou filtrar qualquer escola)
+        if (role.equals("ADM") || role.equals("ROLE_ADM") ||
+                role.equals("RH") || role.equals("ROLE_RH")) {
+            return ResponseEntity.ok(dashboardService.calcularResumo(estruturaId, competenciaId));
         }
 
-        // 2. Diretor/Outros veem só o seu
+        // 3. Se for DIRETOR ou OUTROS, tem "Visão Local" (só vê a sua escola)
         List<EstruturaAdmDTO> minhasEstruturas = estruturaAdmService.listarEstruturasDoUsuario(email);
+
         if (minhasEstruturas.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sem vínculo escolar.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Usuário não vinculado a nenhuma escola. Solicite acesso a um setor.");
         }
 
-        Long meuId = minhasEstruturas.get(0).id();
+        // Pega o ID da escola vinculada ao usuário
+        Long minhaEstruturaId = minhasEstruturas.get(0).id();
 
-        if (estruturaId != null && !estruturaId.equals(meuId)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado a esta escola.");
+
+        if (estruturaId != null && !estruturaId.equals(minhaEstruturaId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Você não tem permissão para ver dados desta escola.");
         }
 
-        return ResponseEntity.ok(dashboardService.gerarDashboardAnual(meuId, ano));
+
+        return ResponseEntity.ok(dashboardService.calcularResumo(minhaEstruturaId, competenciaId));
     }
 }
